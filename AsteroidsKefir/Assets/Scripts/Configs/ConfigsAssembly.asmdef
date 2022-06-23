@@ -1,0 +1,17 @@
+{
+    "name": "ConfigsAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:07bea0c497b032b41b69c3c39ce48b84",
+        "GUID:8e703b150d0ea57439ac416f54274a23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
