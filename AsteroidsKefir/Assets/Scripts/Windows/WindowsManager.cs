@@ -11,6 +11,10 @@ namespace Asteroids.Windows
         private readonly Dictionary<Type, Window> _windowPrefabsByType = new();
         private readonly Dictionary<Type, Window> _currentwindows = new();
 
+        public delegate Window InstantiateWindowDelegate(Window window);
+
+        public static InstantiateWindowDelegate CustomWindowInstantiator;
+
         private void AddWindowPrefabs(List<Window> prefabs)
         {
             foreach (var windowPrefab in prefabs)
@@ -32,7 +36,7 @@ namespace Asteroids.Windows
                 throw new Exception($"No prefab for window {windowType}");
 
             var original = _windowPrefabsByType[windowType];
-            var window = Instantiate((TWindow)original, transform);
+            var window = InstantiateWindow((TWindow)original);
             
             _currentwindows.Add(windowType, window);
             window.Setup(setup);
@@ -47,6 +51,15 @@ namespace Asteroids.Windows
 
             _currentwindows.Remove(windowType);
             Destroy(window.gameObject);
+        }
+        
+        private BaseWindow<TSetup> InstantiateWindow<TSetup>(BaseWindow<TSetup> original) where TSetup : WindowSetup, new()
+        {
+            var window = CustomWindowInstantiator != null
+                ? (BaseWindow<TSetup>) CustomWindowInstantiator(original)
+                : Instantiate(original, transform);
+
+            return window;
         }
     }
 }

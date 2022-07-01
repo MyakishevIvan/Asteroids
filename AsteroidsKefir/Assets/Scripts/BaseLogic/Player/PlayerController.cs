@@ -3,24 +3,19 @@ using Asteroids.Player.ShootSystem;
 using Asteroids.Windows;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace Asteroids.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        private PlayerShootSystem _playerShootSystem;
-        private PlayerMovementSystem _playerMovement;
+        [Inject] private PlayerShootSystem _playerShootSystem;
+        [Inject] private PlayerMovementSystem _playerMovement;
+        [Inject] private PlayerHudParams _playerHudParams;
 
-        private void Awake()
+        private void Start()
         {
-            _playerShootSystem = new PlayerShootSystem(transform);
-            _playerMovement = new PlayerMovementSystem(transform);
-            PlayerHudParams.Instance.Score = 0;
-        }
-
-        public void AddBoundsToMovementSystem(Transform horizontalBounds, Transform verticalBounds)
-        {
-            _playerMovement.InitBounds(horizontalBounds, verticalBounds);
+            _playerHudParams.Score = 0;
         }
         
         private void Update()
@@ -35,10 +30,11 @@ namespace Asteroids.Player
             {
                 var setup = new PromptWindowSetup()
                 {
-                    promptText = "You died\nScore " + PlayerHudParams.Instance.Score,
+                    promptText = "You died\nScore " + _playerHudParams.Score,
                     onOkButtonClick = () =>
                     {
                         WindowsManager.Instance.Close<PromptWindow>();
+                        WindowsManager.Instance.Close<Hud>();
                         SceneManager.LoadScene("BaseScene", LoadSceneMode.Single);
                     }
                 };

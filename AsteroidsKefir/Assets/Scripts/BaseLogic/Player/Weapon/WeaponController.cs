@@ -2,12 +2,13 @@
 using Asteroids.Enemies;
 using Asteroids.Enums;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Player.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
-        private WeaponConfig _weaponConfig;
+        [Inject] private BalanceStorage _balanceStorage;
         private Vector3 _direction;
         private WeaponType _weaponType;
 
@@ -15,7 +16,6 @@ namespace Asteroids.Player.Weapon
         {
             _weaponType = GetComponent<WeaponView>().WeaponType;
             Invoke(nameof(DestroyWeapon), 5f);
-            _weaponConfig = BalanceStorage.instance.WeaponConfig;
         }
 
         private void DestroyWeapon() => Destroy(gameObject);
@@ -25,7 +25,7 @@ namespace Asteroids.Player.Weapon
             if (_direction == Vector3.zero)
                 return;
 
-            transform.position += _direction * (_weaponConfig.ShootSpeed * Time.deltaTime);
+            transform.position += _direction * (_balanceStorage.WeaponConfig.ShootSpeed * Time.deltaTime);
         }
 
         public void AddDirection(Vector3 direction)
@@ -39,7 +39,7 @@ namespace Asteroids.Player.Weapon
             {
                 if (_weaponType == WeaponType.Bullet)
                     Destroy(gameObject);
-                
+
                 var enemyController = col.gameObject.GetComponent<EnemyController>();
                 enemyController.DamageEnemy(_weaponType);
             }

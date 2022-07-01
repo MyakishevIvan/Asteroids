@@ -2,22 +2,22 @@
 using Asteroids.Configs;
 using Asteroids.Enums;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Enemies
 {
     public class EnemyController : MonoBehaviour
     {
+        [Inject] private EnemiesControlSystem _enemiesControlSystem;
+        [Inject] private BalanceStorage _balanceStorage;
         private EnemyType _enemyType;
-        private EnemiesConfig _enemiesConfig;
         private float _speed;
-        private EnemiesControlSystem _enemiesControlSystem;
         private Vector3 _direction;
 
-        private void Awake()
+        private void Start()
         {
+            
             _enemyType = GetComponent<EnemyView>().EnemyType;
-            _enemiesConfig = BalanceStorage.instance.EnemiesConfig;
-
             SelectEnemySpeed();
         }
 
@@ -26,28 +26,22 @@ namespace Asteroids.Enemies
             switch (_enemyType)
             {
                 case EnemyType.Asteroid:
-                    _speed = _enemiesConfig.AsteroidFlySpeed;
+                    _speed = _balanceStorage.EnemiesConfig.AsteroidFlySpeed;
                     break;
                 case EnemyType.Saucer:
-                    _speed = _enemiesConfig.SaucerFlySpeed;
+                    _speed = _balanceStorage.EnemiesConfig.SaucerFlySpeed;
                     break;
                 case EnemyType.AsteroidParticle:
-                    _speed = _enemiesConfig.AsteroidParticleFlySpeed;
+                    _speed = _balanceStorage.EnemiesConfig.AsteroidParticleFlySpeed;
                     break;
 
                 default:
                     throw new ArgumentException("There is no speed for enemy Type " + _enemyType);
             }
         }
-
-        public void InitEnemyController(EnemiesControlSystem enemiesControlSystem)
-        {
-            _enemiesControlSystem = enemiesControlSystem;
-        }
         
-        public void InitEnemyController(EnemiesControlSystem enemiesControlSystem,  Vector3 direction)
+        public void SetDirection(Vector3 direction)
         {
-            _enemiesControlSystem = enemiesControlSystem;
             _direction = direction;
         }
 

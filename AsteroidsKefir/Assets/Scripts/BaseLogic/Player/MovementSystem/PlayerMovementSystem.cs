@@ -1,32 +1,33 @@
 ﻿using Asteroids.Configs;
 using Asteroids.Windows;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Player
 {
-    public class PlayerMovementSystem 
+    public class PlayerMovementSystem : IInitializable
     {
+        [Inject] private BalanceStorage _balanceStorage;
+        [Inject] private PlayerHudParams _hudParams;
+        [Inject] private PlayerView _playerView;
         private Transform _horizontalBounds;
         private Transform _verticalBounds;
         private Vector2 _currentInput;
         private Vector2 _smoothInputVelocity;
         private Vector2 _oldPosition;
-        private PlayerHudParams _hudParams;
-        private PlayerConfig _playerConfig;
-        private Transform _playerTransform;
+        
+        private Transform _playerTransform => _playerView.transform;
+        private PlayerConfig _playerConfig => _balanceStorage.PlayerConfig;
 
-        public PlayerMovementSystem(Transform transform)
+        public PlayerMovementSystem(Transform horizontalBounds, Transform verticalBounds)
         {
-            _hudParams = PlayerHudParams.Instance;
-            _playerConfig = BalanceStorage.instance.PlayerConfig;
-            _oldPosition = transform.position;
-            _playerTransform = transform;
+            _horizontalBounds = horizontalBounds;
+            _verticalBounds = verticalBounds;
         }
-
-        public void InitBounds(Transform boundsHorizontal, Transform boundsVertical)
+        
+        public void Initialize()
         {
-            _horizontalBounds = boundsHorizontal;
-            _verticalBounds = boundsVertical;
+            _oldPosition = _playerView.transform.position;
         }
         
         public void PlayerMovementUpdate()
@@ -35,14 +36,16 @@ namespace Asteroids.Player
                 Input.GetAxis("Vertical") * _playerConfig.PlayerSpeed);
 
             _currentInput =
-                Vector2.SmoothDamp(_currentInput, movementInput, ref _smoothInputVelocity, _playerConfig.SmoothInputSpeed);
+                Vector2.SmoothDamp(_currentInput, movementInput, ref _smoothInputVelocity,
+                    _playerConfig.SmoothInputSpeed);
 
-            _playerTransform.Translate(Vector3.up * _currentInput.y * Time.deltaTime);
-            _playerTransform.Rotate(0, 0, -_currentInput.x * Time.deltaTime);
+            _playerView.transform.Translate(Vector3.up * _currentInput.y * Time.deltaTime);
+            _playerView.transform.Rotate(0, 0, -_currentInput.x * Time.deltaTime);
 
             CheckBounds();
             SendStats();
-            _oldPosition = _playerTransform.position;
+            
+            _oldPosition = _playerView.transform.position;
         }
 
         private void SendStats()
@@ -50,7 +53,6 @@ namespace Asteroids.Player
             _hudParams.coordinates = _playerTransform.position;
             _hudParams.angel = _playerTransform.rotation.eulerAngles.z;
             _hudParams.speed = Vector2.Distance(_playerTransform.position, _oldPosition) / Time.deltaTime;
-
         }
 
         private void CheckBounds()
@@ -69,5 +71,6 @@ namespace Asteroids.Player
                 _playerTransform.position =
                     new Vector3(_playerTransform.position.x, _verticalBounds.position.y, _playerTransform.position.z);
         }
+        
     }
 }

@@ -1,22 +1,20 @@
 ﻿using System;
 using Asteroids.Enums;
+using Asteroids.Player;
 using Asteroids.Windows;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Zenject;
 
 namespace Asteroids.Enemies
 {
     public class EnemiesControlSystem
     {
+        [Inject] private PlayerHudParams _playerHudParams;
+        [Inject] private PlayerView _playerView;
         public static event Action<Transform> OnAsteroidDamage;
-
-        private Transform _playerTransform;
-
-        public EnemiesControlSystem(Transform playerViewTransform)
-        {
-            _playerTransform = playerViewTransform;
-        }
-
+       
+       
         public void UpdateAsteroidMovement(Transform transform, Vector3 direction, float speed)
         {
             var dir = direction * (speed * Time.deltaTime);
@@ -27,9 +25,9 @@ namespace Asteroids.Enemies
 
         public void UpdateSaucerMovement(Transform transform, float speed)
         {
-            if (_playerTransform != null)
+            if (_playerView != null)
                 transform.position =
-                    Vector3.MoveTowards(transform.position, _playerTransform.position, speed * Time.deltaTime);
+                    Vector3.MoveTowards(transform.position, _playerView.transform.position, speed * Time.deltaTime);
         }
 
         public void DamageEnemy(EnemyType enemyType, WeaponType weaponType, EnemyController enemyController)
@@ -38,7 +36,7 @@ namespace Asteroids.Enemies
                 OnAsteroidDamage?.Invoke(enemyController.transform);
 
             Object.Destroy(enemyController.gameObject);
-            PlayerHudParams.Instance.Score++;
+            _playerHudParams.Score++;
         }
     }
 }

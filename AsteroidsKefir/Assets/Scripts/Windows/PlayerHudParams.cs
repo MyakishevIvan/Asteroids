@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
+using Asteroids.Configs;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Windows
 {
-    public class PlayerHudParams
+    public class PlayerHudParams : IInitializable
     {
-        private static PlayerHudParams _instance;
-        public static PlayerHudParams Instance => _instance ?? new PlayerHudParams();
-        
+        [Inject] private BalanceStorage _balanceStorage;
         public int rayCount;
         public float angel;
         public float speed;
@@ -15,14 +16,14 @@ namespace Asteroids.Windows
         public Vector2 coordinates;
         private FieldInfo[] _fields;
         public int Score { get; set; }
-
-        private PlayerHudParams()
+        
+        public void Initialize()
         {
             var type = this.GetType();
-            _fields = type.GetFields();
-            _instance = this;
+           _fields = type.GetFields().Where(x => x.IsPublic).ToArray();
+            rayCount = _balanceStorage.WeaponConfig.RayShootCount;
         }
-
+        
         public override string ToString()
         {
             var result = string.Empty;
@@ -34,5 +35,6 @@ namespace Asteroids.Windows
 
             return result;
         }
+
     }
 }

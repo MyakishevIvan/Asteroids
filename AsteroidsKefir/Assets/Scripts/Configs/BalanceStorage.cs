@@ -5,7 +5,7 @@ namespace Asteroids.Configs
 {
     [CreateAssetMenu(fileName = "BalanceStorage", menuName = "Configs/BalanceStorage")]
     
-    public class BalanceStorage : ScriptableSingleton<BalanceStorage>
+    public class BalanceStorage : ScriptableObject
     {
         [SerializeField] private ObjectViewConfig objectViewConfig;
         [SerializeField] private WeaponConfig weaponConfig;

@@ -1,24 +1,26 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Asteroids.Configs;
+using Asteroids.Enums;
 using Asteroids.Helper;
-using Asteroids.Player.Weapon;
 using Asteroids.Windows;
 using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Player.ShootSystem
 {
     public class RayShootCreator : ShootingCreator
     {
-        private WeaponConfig _weaponConfig;
-        private PlayerHudParams _playerHudParams;
+        [Inject] private BalanceStorage _balanceStorage;
+        [Inject] private PlayerHudParams _playerHudParams;
         private Coroutine _reloadRoutine;
         
-        public RayShootCreator(WeaponView weapon, Action<WeaponView> OnShoot, WeaponConfig weaponConfig, PlayerHudParams playerHudParams) : base(weapon, OnShoot)
+        protected override void SelectWeapon()
         {
-            _weaponConfig = weaponConfig;
-            _playerHudParams = playerHudParams;
-            _playerHudParams.rayCount = _weaponConfig.RayShootCount;
+            _weapon = _balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Ray);
+        }
+        
+        public RayShootCreator( ) : base("Ray")
+        {
         }
 
         public override void Shoot()
@@ -38,7 +40,7 @@ namespace Asteroids.Player.ShootSystem
 
             if (_playerHudParams.rayCount == 0)
             {
-                _playerHudParams.rayReloadTime = _weaponConfig.ReloadTime;
+                _playerHudParams.rayReloadTime = _balanceStorage.WeaponConfig.ReloadTime;
                 _reloadRoutine = CoroutinesManager.StartRoutine(SpendReloadTime());
             }
             return true;
@@ -52,8 +54,9 @@ namespace Asteroids.Player.ShootSystem
                 _playerHudParams.rayReloadTime--;
             }
 
-            _playerHudParams.rayCount = _weaponConfig.RayShootCount;
+            _playerHudParams.rayCount = _balanceStorage.WeaponConfig.RayShootCount;
             CoroutinesManager.StopRoutine(_reloadRoutine);
         }
+        
     }
 }
