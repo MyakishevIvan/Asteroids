@@ -24,6 +24,8 @@ namespace Asteroids.Player.ShootSystem
         
         public void Initialize()
         {
+            _playerHudParams.rayCount = _balanceStorage.WeaponConfig.RayShootCount;
+            _playerHudParams.rayReloadTime = 0;
             _weaponContainer = new GameObject(_containerName+"Container");
             _playerHudParams.rayCount = _balanceStorage.WeaponConfig.RayShootCount;
             SelectWeapon();
@@ -35,6 +37,9 @@ namespace Asteroids.Player.ShootSystem
 
         public virtual void Shoot()
         {
+            if(_playerView == null)
+                return;
+            
             var weaponObj = Object.Instantiate
             (_weapon, _playerView.transform.position,
                 Quaternion.Euler(0, 0, _playerView.transform.rotation.eulerAngles.z),

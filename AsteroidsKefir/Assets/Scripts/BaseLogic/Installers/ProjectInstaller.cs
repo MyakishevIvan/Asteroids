@@ -11,6 +11,7 @@ namespace Asteroids.BaseLogic
     {
         [SerializeField] private WindowsManager windowsManager;
         [SerializeField] private BalanceStorage balanceStorage;
+        
 
         public override void InstallBindings()
         {
@@ -27,11 +28,13 @@ namespace Asteroids.BaseLogic
             WindowsManager.CustomWindowInstantiator = CustomWindowInstantiation;
             Container.Bind<BalanceStorage>().FromInstance(balanceStorage).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerHudParams>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
         }
 
         private void DeclareSignals()
         {
             SignalBusInstaller.Install(Container);
+            
         }
 
         private Window CustomWindowInstantiation(Window windowPrefab)

@@ -21,7 +21,6 @@ namespace Asteroids.Windows
         {
             var type = this.GetType();
            _fields = type.GetFields().Where(x => x.IsPublic).ToArray();
-            rayCount = _balanceStorage.WeaponConfig.RayShootCount;
         }
         
         public override string ToString()

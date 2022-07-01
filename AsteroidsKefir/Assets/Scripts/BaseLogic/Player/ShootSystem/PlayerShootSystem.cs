@@ -3,6 +3,7 @@ using Asteroids.Enums;
 using Asteroids.Player.Weapon;
 using Asteroids.Windows;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
 using Object = UnityEngine.Object;
 
@@ -12,37 +13,44 @@ namespace Asteroids.Player.ShootSystem
     {
         [Inject] private PlayerHudParams _hudParams;
         [Inject] private BalanceStorage _balanceStorage;
-        private Coroutine _reloadRoutine;
-        private float _currentShootDelay;
+        [Inject] private PlayerInputAction _playerInputAction;
         [Inject] private BulletShootCreator _bulletShootCreator;
         [Inject] private RayShootCreator _rayShootCreator;
-        private ShootingCreator _shootingCreator;
+        private float _previouseTime;
+        private float _currentTime;
+        
         
         public void Initialize()
         {
-            _hudParams.rayReloadTime = 0;
+            _playerInputAction.Player.ShootBullet.performed += ShootBulletOnperformed;
+            _playerInputAction.Player.ShootRay.performed += ShootRayOnperformed;
+            _previouseTime = _balanceStorage.WeaponConfig.ShootDelay;
+        }
+
+        private void ShootBulletOnperformed(InputAction.CallbackContext obj)
+        {
+            StartShooting(_bulletShootCreator);
+        }
+
+        private void ShootRayOnperformed(InputAction.CallbackContext obj)
+        {
+            StartShooting(_rayShootCreator);
         }
         
-        public void ShootUpdate()
+        public void UnsubscribeInput()
         {
-            _currentShootDelay += Time.deltaTime;
-            
-            if (_currentShootDelay < _balanceStorage.WeaponConfig.ShootDelay)
-                return;
-            
-            if (Input.GetMouseButtonDown(0))
-            {
-                StartShooting(_bulletShootCreator);
-            }
-            else if (Input.GetMouseButtonDown(1))
-            {
-                StartShooting(_rayShootCreator);
-            }
+            _playerInputAction.Player.ShootBullet.performed -= ShootBulletOnperformed;
+            _playerInputAction.Player.ShootRay.performed -= ShootRayOnperformed;
         }
 
         private void StartShooting(ShootingCreator shootingCreator)
         {
-            _currentShootDelay = 0;
+            _currentTime = Time.time - _previouseTime;
+
+            if (_currentTime < _balanceStorage.WeaponConfig.ShootDelay)
+                return;
+            
+            _previouseTime = Time.time;
             shootingCreator.Shoot();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Asteroids.Helper;
+﻿using System;
+using Asteroids.Helper;
 using Asteroids.Player.ShootSystem;
 using Asteroids.Windows;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Asteroids.Player
         
         private void Update()
         {
-            _playerShootSystem.ShootUpdate();
+            //_playerShootSystem.ShootUpdate();
             _playerMovement.PlayerMovementUpdate();
         }
 
@@ -43,6 +44,11 @@ namespace Asteroids.Player
                 CoroutinesManager.StopAllRoutines();
                 Destroy(gameObject);
             }
+        }
+
+        private void OnDestroy()
+        {
+            _playerShootSystem.UnsubscribeInput();
         }
     }
 }

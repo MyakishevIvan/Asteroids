@@ -1,7 +1,6 @@
 ﻿using Asteroids.Configs;
 using Asteroids.Windows;
-using UnityEngine;
-using Zenject;
+using UnityEngine;using Zenject;
 
 namespace Asteroids.Player
 {
@@ -10,6 +9,7 @@ namespace Asteroids.Player
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private PlayerHudParams _hudParams;
         [Inject] private PlayerView _playerView;
+        [Inject] private PlayerInputAction _playerInputAction; 
         private Transform _horizontalBounds;
         private Transform _verticalBounds;
         private Vector2 _currentInput;
@@ -28,15 +28,14 @@ namespace Asteroids.Player
         public void Initialize()
         {
             _oldPosition = _playerView.transform.position;
+            _playerInputAction.Enable();
         }
         
         public void PlayerMovementUpdate()
         {
-            var movementInput = new Vector2(Input.GetAxis("Horizontal") * _playerConfig.RotationSpeed,
-                Input.GetAxis("Vertical") * _playerConfig.PlayerSpeed);
-
+            var movementInput = _playerInputAction.Player.Movement.ReadValue<Vector2>();
             _currentInput =
-                Vector2.SmoothDamp(_currentInput, movementInput, ref _smoothInputVelocity,
+                Vector2.SmoothDamp(_currentInput, new Vector2(movementInput.x * _playerConfig.RotationSpeed, movementInput.y * _playerConfig.PlayerSpeed), ref _smoothInputVelocity,
                     _playerConfig.SmoothInputSpeed);
 
             _playerView.transform.Translate(Vector3.up * _currentInput.y * Time.deltaTime);
