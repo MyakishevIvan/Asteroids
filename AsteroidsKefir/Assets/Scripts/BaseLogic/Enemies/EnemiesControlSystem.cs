@@ -32,9 +32,10 @@ namespace Asteroids.Enemies
         public void DamageEnemy(EnemyType enemyType, WeaponType weaponType, EnemyController enemyController)
         {
             if (enemyType == EnemyType.Asteroid && weaponType != WeaponType.Ray)
-                _signalBus.Fire(new AsteroidDamageSignal(enemyController.transform));
+                _signalBus.Fire(new AsteroidBlowSignal(enemyController.transform));
 
-            Object.Destroy(enemyController.gameObject);
+            
+            enemyController.EnemyView.Dispose();
             _playerHudParams.Score++;
         }
     }

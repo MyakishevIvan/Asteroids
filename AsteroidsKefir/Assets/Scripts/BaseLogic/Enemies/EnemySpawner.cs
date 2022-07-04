@@ -21,7 +21,7 @@ public class EnemySpawner : IInitializable
 
     public void Initialize()
     {
-        _signalBus.Subscribe<AsteroidDamageSignal>(InstantiateAsteroidParticle);
+        _signalBus.Subscribe<AsteroidBlowSignal>(InstantiateAsteroidParticle);
         CoroutinesManager.StartRoutine(EnemySpawnRoutine());
     }
 
@@ -89,7 +89,7 @@ public class EnemySpawner : IInitializable
         rotation = Quaternion.AngleAxis(variance, Vector3.forward);
     }
 
-    private void InstantiateAsteroidParticle(AsteroidDamageSignal signal)
+    private void InstantiateAsteroidParticle(AsteroidBlowSignal signal)
     {
         for (int i = 0; i < _balanceStorage.EnemiesConfig.EnemyParticlesCount; i++)
         {

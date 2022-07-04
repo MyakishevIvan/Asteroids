@@ -35,7 +35,7 @@ namespace Asteroids.BaseLogic
         private void DeclareSignals()
         {
             SignalBusInstaller.Install(Container);
-            Container.DeclareSignal<AsteroidDamageSignal>();
+            Container.DeclareSignal<AsteroidBlowSignal>();
 
         }
 
@@ -47,5 +47,4 @@ namespace Asteroids.BaseLogic
             return window;
         }
     }
-    
 }

@@ -10,20 +10,19 @@ namespace Asteroids.Enemies
     {
         [Inject] private EnemiesControlSystem _enemiesControlSystem;
         [Inject] private BalanceStorage _balanceStorage;
-        private EnemyType _enemyType;
+        public EnemyView EnemyView { get; private set; }
         private float _speed;
         private Vector3 _direction;
 
         private void Start()
         {
-            
-            _enemyType = GetComponent<EnemyView>().EnemyType;
+            EnemyView = GetComponent<EnemyView>();
             SelectEnemySpeed();
         }
 
         private void SelectEnemySpeed()
         {
-            switch (_enemyType)
+            switch (EnemyView.EnemyType)
             {
                 case EnemyType.Asteroid:
                     _speed = _balanceStorage.EnemiesConfig.AsteroidFlySpeed;
@@ -36,7 +35,7 @@ namespace Asteroids.Enemies
                     break;
 
                 default:
-                    throw new ArgumentException("There is no speed for enemy Type " + _enemyType);
+                    throw new ArgumentException("There is no speed for enemy Type " + EnemyView.EnemyType);
             }
         }
         
@@ -47,15 +46,15 @@ namespace Asteroids.Enemies
 
         private void Update()
         {
-            if (_enemyType == EnemyType.Asteroid || _enemyType == EnemyType.AsteroidParticle)
+            if (EnemyView.EnemyType == EnemyType.Asteroid || EnemyView.EnemyType == EnemyType.AsteroidParticle)
                 _enemiesControlSystem.UpdateAsteroidMovement(transform, _direction, _speed);
-            else if (_enemyType == EnemyType.Saucer)
+            else if (EnemyView.EnemyType == EnemyType.Saucer)
                 _enemiesControlSystem.UpdateSaucerMovement(transform, _speed);
         }
 
         public void DamageEnemy(WeaponType weaponType)
         {
-            _enemiesControlSystem.DamageEnemy(_enemyType, weaponType, this);
+            _enemiesControlSystem.DamageEnemy(EnemyView.EnemyType, weaponType, this);
         }
     }
 }

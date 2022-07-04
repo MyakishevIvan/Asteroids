@@ -2,13 +2,14 @@ using UnityEngine;
 
 namespace Asteroids.Signals
 {
-    public class AsteroidDamageSignal
+    public class AsteroidBlowSignal
     {
         public readonly Transform AsteroidTransform;
 
-        public AsteroidDamageSignal(Transform asteroidTransform)
+        public AsteroidBlowSignal(Transform asteroidTransform)
         {
             AsteroidTransform = asteroidTransform;
         }
+        
     }
 }
