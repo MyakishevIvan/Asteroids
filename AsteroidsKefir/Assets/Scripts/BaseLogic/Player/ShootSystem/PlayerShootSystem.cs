@@ -1,4 +1,5 @@
-﻿using Asteroids.Configs;
+﻿using System;
+using Asteroids.Configs;
 using Asteroids.Enums;
 using Asteroids.Player.Weapon;
 using Asteroids.Windows;
@@ -9,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Asteroids.Player.ShootSystem
 {
-    public class PlayerShootSystem : IInitializable
+    public class PlayerShootSystem : IInitializable, IDisposable
     {
         [Inject] private PlayerHudParams _hudParams;
         [Inject] private BalanceStorage _balanceStorage;
@@ -37,12 +38,6 @@ namespace Asteroids.Player.ShootSystem
             StartShooting(_rayShootCreator);
         }
         
-        public void UnsubscribeInput()
-        {
-            _playerInputAction.Player.ShootBullet.performed -= ShootBulletOnperformed;
-            _playerInputAction.Player.ShootRay.performed -= ShootRayOnperformed;
-        }
-
         private void StartShooting(ShootingCreator shootingCreator)
         {
             _currentTime = Time.time - _previouseTime;
@@ -52,6 +47,11 @@ namespace Asteroids.Player.ShootSystem
             
             _previouseTime = Time.time;
             shootingCreator.Shoot();
+        }
+
+        public void Dispose()
+        {
+            _playerInputAction?.Dispose();
         }
     }
 }

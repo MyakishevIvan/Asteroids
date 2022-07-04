@@ -28,7 +28,7 @@ namespace Asteroids.Player
         public void Initialize()
         {
             _oldPosition = _playerView.transform.position;
-            _playerInputAction.Enable();
+           _playerInputAction.Enable();
         }
         
         public void PlayerMovementUpdate()
@@ -70,6 +70,5 @@ namespace Asteroids.Player
                 _playerTransform.position =
                     new Vector3(_playerTransform.position.x, _verticalBounds.position.y, _playerTransform.position.z);
         }
-        
     }
 }

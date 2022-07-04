@@ -1,6 +1,7 @@
 using System;
 using Asteroids.Configs;
 using Asteroids.Enemies;
+using Asteroids.Enums;
 using Asteroids.Player;
 using Asteroids.Player.ShootSystem;
 using Asteroids.Windows;
@@ -36,7 +37,7 @@ namespace Asteroids.BaseLogic
         {
             var playerViewInstance = Container.InstantiatePrefabForComponent<PlayerView>(_balanceStorage.ObjectViewConfig.PlayerView, 
                 Vector3.zero, quaternion.identity, null);
-            
+            Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
             Container.Bind<PlayerView>().FromInstance(playerViewInstance).AsSingle().NonLazy();
             Container.Bind<EnemiesControlSystem>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerShootSystem>().AsSingle();
@@ -44,6 +45,15 @@ namespace Asteroids.BaseLogic
             Container.BindInterfacesAndSelfTo<RayShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
                 .WithArguments(horizontalBounds, verticalBounds);
+            Container.BindFactory<EnemyView, EnemyView.AsteroidFactory>()
+                .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.Asteroid))
+                .WithGameObjectName("Asteroid").UnderTransformGroup("Enemies");
+            Container.BindFactory<EnemyView, EnemyView.AsteroidParticleFactory>()
+                .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.AsteroidParticle))
+                .WithGameObjectName("AsteroidParticle").UnderTransformGroup("Enemies");
+            Container.BindFactory<EnemyView, EnemyView.SaucerFactory>()
+                .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.Saucer))
+                .WithGameObjectName("Saucer").UnderTransformGroup("Enemies");
             Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
             
             var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);

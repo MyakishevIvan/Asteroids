@@ -1,6 +1,8 @@
 using Asteroids.Configs;
 using Asteroids.Enemies;
+using Asteroids.Enums;
 using Asteroids.Player;
+using Asteroids.Signals;
 using Asteroids.Windows;
 using UnityEngine;
 using Zenject;
@@ -28,13 +30,13 @@ namespace Asteroids.BaseLogic
             WindowsManager.CustomWindowInstantiator = CustomWindowInstantiation;
             Container.Bind<BalanceStorage>().FromInstance(balanceStorage).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerHudParams>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
         }
 
         private void DeclareSignals()
         {
             SignalBusInstaller.Install(Container);
-            
+            Container.DeclareSignal<AsteroidDamageSignal>();
+
         }
 
         private Window CustomWindowInstantiation(Window windowPrefab)

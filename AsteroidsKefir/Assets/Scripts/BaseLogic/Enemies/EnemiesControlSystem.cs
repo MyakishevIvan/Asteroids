@@ -1,6 +1,6 @@
-﻿using System;
-using Asteroids.Enums;
+﻿using Asteroids.Enums;
 using Asteroids.Player;
+using Asteroids.Signals;
 using Asteroids.Windows;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,9 +12,8 @@ namespace Asteroids.Enemies
     {
         [Inject] private PlayerHudParams _playerHudParams;
         [Inject] private PlayerView _playerView;
-        public static event Action<Transform> OnAsteroidDamage;
-       
-       
+        [Inject] private SignalBus _signalBus;
+        
         public void UpdateAsteroidMovement(Transform transform, Vector3 direction, float speed)
         {
             var dir = direction * (speed * Time.deltaTime);
@@ -33,7 +32,7 @@ namespace Asteroids.Enemies
         public void DamageEnemy(EnemyType enemyType, WeaponType weaponType, EnemyController enemyController)
         {
             if (enemyType == EnemyType.Asteroid && weaponType != WeaponType.Ray)
-                OnAsteroidDamage?.Invoke(enemyController.transform);
+                _signalBus.Fire(new AsteroidDamageSignal(enemyController.transform));
 
             Object.Destroy(enemyController.gameObject);
             _playerHudParams.Score++;

@@ -13,7 +13,7 @@ namespace Asteroids.Player
         [Inject] private PlayerShootSystem _playerShootSystem;
         [Inject] private PlayerMovementSystem _playerMovement;
         [Inject] private PlayerHudParams _playerHudParams;
-
+        
         private void Start()
         {
             _playerHudParams.Score = 0;
@@ -21,7 +21,6 @@ namespace Asteroids.Player
         
         private void Update()
         {
-            //_playerShootSystem.ShootUpdate();
             _playerMovement.PlayerMovementUpdate();
         }
 
@@ -44,11 +43,6 @@ namespace Asteroids.Player
                 CoroutinesManager.StopAllRoutines();
                 Destroy(gameObject);
             }
-        }
-
-        private void OnDestroy()
-        {
-            _playerShootSystem.UnsubscribeInput();
         }
     }
 }

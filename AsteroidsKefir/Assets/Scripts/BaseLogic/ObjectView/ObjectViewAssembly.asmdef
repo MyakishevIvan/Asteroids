@@ -2,7 +2,8 @@
     "name": "ObjectViewAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:8e703b150d0ea57439ac416f54274a23"
+        "GUID:8e703b150d0ea57439ac416f54274a23",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
