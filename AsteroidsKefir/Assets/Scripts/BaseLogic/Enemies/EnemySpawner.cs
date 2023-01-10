@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Asteroids.Signals;
 using Asteroids.Configs;
 using Asteroids.Enemies;
 using Asteroids.Enums;
 using Asteroids.Helper;
-using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
 
@@ -94,7 +94,7 @@ public class EnemySpawner : IInitializable
         for (int i = 0; i < _balanceStorage.EnemiesConfig.EnemyParticlesCount; i++)
         {
             var asteroidParticle = CreatEnemy(EnemyType.AsteroidParticle);
-            Vector2 position = signal.AsteroidTransform.position;
+            Vector2 position = signal.AsroidTransform.position;
             position += Random.insideUnitCircle;
             asteroidParticle.transform.position = position;
 

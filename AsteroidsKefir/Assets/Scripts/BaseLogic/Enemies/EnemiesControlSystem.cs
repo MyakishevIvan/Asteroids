@@ -1,16 +1,13 @@
-﻿using Asteroids.Enums;
+﻿using Asteroids.Signals;
+using Asteroids.Enums;
 using Asteroids.Player;
-using Asteroids.Signals;
-using Asteroids.Windows;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Zenject;
 
 namespace Asteroids.Enemies
 {
     public class EnemiesControlSystem
     {
-        [Inject] private PlayerHudParams _playerHudParams;
         [Inject] private PlayerView _playerView;
         [Inject] private SignalBus _signalBus;
         
@@ -33,10 +30,8 @@ namespace Asteroids.Enemies
         {
             if (enemyType == EnemyType.Asteroid && weaponType != WeaponType.Ray)
                 _signalBus.Fire(new AsteroidBlowSignal(enemyController.transform));
-
             
             enemyController.EnemyView.Dispose();
-            _playerHudParams.Score++;
         }
     }
 }

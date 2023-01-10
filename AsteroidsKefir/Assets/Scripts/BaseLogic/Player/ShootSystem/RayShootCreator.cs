@@ -11,7 +11,7 @@ namespace Asteroids.Player.ShootSystem
     public class RayShootCreator : ShootingCreator
     {
         [Inject] private BalanceStorage _balanceStorage;
-        [Inject] private PlayerHudParams _playerHudParams;
+        [Inject] private PlayerHudParamsCounter _playerHudParamsCounter;
         private Coroutine _reloadRoutine;
         
         protected override void SelectWeapon()
@@ -33,14 +33,14 @@ namespace Asteroids.Player.ShootSystem
         
         private bool CanStartRayRayShooting()
         {
-            if (_playerHudParams.rayReloadTime != 0)
+            if (_playerHudParamsCounter.rayReloadTime != 0)
                 return false;
 
-            _playerHudParams.rayCount--;
+            _playerHudParamsCounter.RayCount--;
 
-            if (_playerHudParams.rayCount == 0)
+            if (_playerHudParamsCounter.RayCount == 0)
             {
-                _playerHudParams.rayReloadTime = _balanceStorage.WeaponConfig.ReloadTime;
+                _playerHudParamsCounter.rayReloadTime = _balanceStorage.WeaponConfig.ReloadTime;
                 _reloadRoutine = CoroutinesManager.StartRoutine(SpendReloadTime());
             }
             return true;
@@ -48,13 +48,13 @@ namespace Asteroids.Player.ShootSystem
 
         private IEnumerator SpendReloadTime()
         {
-            while (_playerHudParams.rayReloadTime != 0)
+            while (_playerHudParamsCounter.rayReloadTime != 0)
             {
                 yield return new WaitForSeconds(1);
-                _playerHudParams.rayReloadTime--;
+                _playerHudParamsCounter.rayReloadTime--;
             }
 
-            _playerHudParams.rayCount = _balanceStorage.WeaponConfig.RayShootCount;
+            _playerHudParamsCounter.RayCount = _balanceStorage.WeaponConfig.RayShootCount;
             CoroutinesManager.StopRoutine(_reloadRoutine);
         }
         

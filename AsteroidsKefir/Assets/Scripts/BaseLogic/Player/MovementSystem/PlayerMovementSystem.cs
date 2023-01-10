@@ -1,74 +1,85 @@
 ﻿using Asteroids.Configs;
 using Asteroids.Windows;
-using UnityEngine;using Zenject;
+using UnityEngine;
+using Zenject;
 
 namespace Asteroids.Player
 {
     public class PlayerMovementSystem : IInitializable
     {
         [Inject] private BalanceStorage _balanceStorage;
-        [Inject] private PlayerHudParams _hudParams;
         [Inject] private PlayerView _playerView;
-        [Inject] private PlayerInputAction _playerInputAction; 
-        private Transform _horizontalBounds;
-        private Transform _verticalBounds;
+        [Inject] private PlayerInputAction _playerInputAction;
+        
+        private Vector2 _horizontalBounds;
+        private Vector2 _verticalBounds;
         private Vector2 _currentInput;
         private Vector2 _smoothInputVelocity;
         private Vector2 _oldPosition;
-        
-        private Transform _playerTransform => _playerView.transform;
-        private PlayerConfig _playerConfig => _balanceStorage.PlayerConfig;
 
-        public PlayerMovementSystem(Transform horizontalBounds, Transform verticalBounds)
+        private Transform PlayerTransform => _playerView.transform;
+        private PlayerConfig PlayerConfig => _balanceStorage.PlayerConfig;
+
+        public PlayerMovementSystem(Vector3 horizontalBounds, Vector3 verticalBounds)
         {
             _horizontalBounds = horizontalBounds;
             _verticalBounds = verticalBounds;
         }
-        
+
         public void Initialize()
         {
             _oldPosition = _playerView.transform.position;
-           _playerInputAction.Enable();
+            _playerInputAction.Enable();
         }
-        
+
         public void PlayerMovementUpdate()
         {
             var movementInput = _playerInputAction.Player.Movement.ReadValue<Vector2>();
             _currentInput =
-                Vector2.SmoothDamp(_currentInput, new Vector2(movementInput.x * _playerConfig.RotationSpeed, movementInput.y * _playerConfig.PlayerSpeed), ref _smoothInputVelocity,
-                    _playerConfig.SmoothInputSpeed);
+                Vector2.SmoothDamp
+                (
+                    _currentInput,
+                    new Vector2(movementInput.x * PlayerConfig.RotationSpeed,
+                        movementInput.y * PlayerConfig.PlayerSpeed),
+                    ref _smoothInputVelocity,
+                    PlayerConfig.SmoothInputSpeed
+                );
 
-            _playerView.transform.Translate(Vector3.up * _currentInput.y * Time.deltaTime);
-            _playerView.transform.Rotate(0, 0, -_currentInput.x * Time.deltaTime);
-
+            MovePlayer();
             CheckBounds();
-            SendStats();
-            
             _oldPosition = _playerView.transform.position;
         }
 
-        private void SendStats()
+        private void MovePlayer()
         {
-            _hudParams.coordinates = _playerTransform.position;
-            _hudParams.angel = _playerTransform.rotation.eulerAngles.z;
-            _hudParams.speed = Vector2.Distance(_playerTransform.position, _oldPosition) / Time.deltaTime;
+            _playerView.transform.Translate(Vector3.up * _currentInput.y * Time.deltaTime);
+            _playerView.transform.Rotate(0, 0, -_currentInput.x * Time.deltaTime);
         }
-
+        
         private void CheckBounds()
         {
-            if (_playerTransform.position.x > _horizontalBounds.position.x)
-                _playerTransform.position = new Vector3(-_horizontalBounds.position.x, _playerTransform.position.y,
-                    _playerTransform.position.z);
-            else if (_playerTransform.position.x < -_horizontalBounds.position.x)
-                _playerTransform.position =
-                    new Vector3(_horizontalBounds.position.x, _playerTransform.position.y, _playerTransform.position.z);
+            CheckHorizontalBounds();
+            CheckVerticalBounds();
+        }
+        
+        private void CheckHorizontalBounds()
+        {
+            if (PlayerTransform.position.x > _horizontalBounds.x)
+                PlayerTransform.position = new Vector3(-_horizontalBounds.x, PlayerTransform.position.y,
+                    PlayerTransform.position.z);
+            else if (PlayerTransform.position.x < -_horizontalBounds.x)
+                PlayerTransform.position =
+                    new Vector3(_horizontalBounds.x, PlayerTransform.position.y, PlayerTransform.position.z);
+        }
 
-            if (_playerTransform.position.y > _verticalBounds.position.y)
-                _playerTransform.position =
-                    new Vector3(_playerTransform.position.x, -_verticalBounds.position.y, _playerTransform.position.z);
-            else if (_playerTransform.position.y < -_verticalBounds.position.y)
-                _playerTransform.position =
-                    new Vector3(_playerTransform.position.x, _verticalBounds.position.y, _playerTransform.position.z);
+        private void CheckVerticalBounds()
+        {
+            if (PlayerTransform.position.y > _verticalBounds.y)
+                PlayerTransform.position =
+                    new Vector3(PlayerTransform.position.x, -_verticalBounds.y, PlayerTransform.position.z);
+            else if (PlayerTransform.position.y < -_verticalBounds.y)
+                PlayerTransform.position =
+                    new Vector3(PlayerTransform.position.x, _verticalBounds.y, PlayerTransform.position.z);
         }
     }
 }

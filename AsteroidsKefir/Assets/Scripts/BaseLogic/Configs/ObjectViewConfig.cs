@@ -15,17 +15,15 @@ namespace Asteroids.Configs
         
         public PlayerView PlayerView => playerView;
 
-        public EnemyView GetEnemy(EnemyType enemyType)
+        public EnemyView GetEnemyView(EnemyType enemyType)
         {
-            if (_enemyDict == null)
-            {
-                _enemyDict = new Dictionary<EnemyType, EnemyView>();
-
-                foreach (var enemy in enemies)
-                {
-                    _enemyDict.Add(enemy.EnemyType, enemy);
-                }
-            }
+            if (_enemyDict != null) 
+                return _enemyDict[enemyType];
+            
+            _enemyDict = new Dictionary<EnemyType, EnemyView>();
+            
+            foreach (var enemy in enemies)
+                _enemyDict.Add(enemy.EnemyType, enemy);
 
             return _enemyDict[enemyType];
         }

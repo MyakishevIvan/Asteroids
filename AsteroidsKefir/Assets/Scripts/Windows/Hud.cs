@@ -1,35 +1,40 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
-using Zenject;
 
 namespace Asteroids.Windows
 {
-    public class Hud : BaseWindow<WindowSetup.Empty>
+    public class Hud : BaseWindow<HudSetup>
     {
         [SerializeField] private TMP_Text _textStats;
-        [Inject] private PlayerHudParams _playerHudParams;
         private Coroutine _coroutine;
-
-        public override void Setup(WindowSetup.Empty setup)
+        private HudSetup _hudSetup;
+        
+        public override void Setup(HudSetup setup)
         {
-            _coroutine =  StartCoroutine(UpdateStats());
+            _hudSetup = setup;
+            _coroutine = StartCoroutine(UpdateStats());
         }
-
+        
         private IEnumerator UpdateStats()
         {
             while (true)
             {
-                yield return new WaitForSeconds(0.5f);
-                _textStats.text = _playerHudParams.ToString();
+                yield return new WaitForSeconds(0.3f);
+                _textStats.text = _hudSetup.GetPlayerParams();
             }
         }
-        
+
         private void OnDisable()
         {
             StopCoroutine(_coroutine);
         }
     }
 
-   
+    public class HudSetup : WindowSetup
+    {
+        public Func<string> GetPlayerParams;
+    }
+
 }

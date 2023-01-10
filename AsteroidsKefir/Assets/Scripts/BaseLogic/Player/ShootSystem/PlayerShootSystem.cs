@@ -1,23 +1,21 @@
 ﻿using System;
 using Asteroids.Configs;
-using Asteroids.Enums;
-using Asteroids.Player.Weapon;
 using Asteroids.Windows;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
-using Object = UnityEngine.Object;
+
 
 namespace Asteroids.Player.ShootSystem
 {
     public class PlayerShootSystem : IInitializable, IDisposable
     {
-        [Inject] private PlayerHudParams _hudParams;
+        [Inject] private PlayerHudParamsCounter _hudParamsCounter;
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private PlayerInputAction _playerInputAction;
         [Inject] private BulletShootCreator _bulletShootCreator;
         [Inject] private RayShootCreator _rayShootCreator;
-        private float _previouseTime;
+        private float _previousTime;
         private float _currentTime;
         
         
@@ -25,7 +23,7 @@ namespace Asteroids.Player.ShootSystem
         {
             _playerInputAction.Player.ShootBullet.performed += ShootBulletOnperformed;
             _playerInputAction.Player.ShootRay.performed += ShootRayOnperformed;
-            _previouseTime = _balanceStorage.WeaponConfig.ShootDelay;
+            _previousTime = _balanceStorage.WeaponConfig.ShootDelay;
         }
 
         private void ShootBulletOnperformed(InputAction.CallbackContext obj)
@@ -40,12 +38,12 @@ namespace Asteroids.Player.ShootSystem
         
         private void StartShooting(ShootingCreator shootingCreator)
         {
-            _currentTime = Time.time - _previouseTime;
+            _currentTime = Time.time - _previousTime;
 
             if (_currentTime < _balanceStorage.WeaponConfig.ShootDelay)
                 return;
             
-            _previouseTime = Time.time;
+            _previousTime = Time.time;
             shootingCreator.Shoot();
         }
 

@@ -8,8 +8,8 @@ namespace Asteroids.Windows
     public class WindowsManager : DontDestroyMonoBehaviourSingleton<WindowsManager>
     {
         [SerializeField] private List<Window> windowPrefabs;
-        private readonly Dictionary<Type, Window> _windowPrefabsByType = new();
-        private readonly Dictionary<Type, Window> _currentwindows = new();
+        private readonly Dictionary<Type, Window> _windowPrefabsByType = new Dictionary<Type, Window>();
+        private readonly Dictionary<Type, Window> _currentwindows = new Dictionary<Type, Window>();
 
         public delegate Window InstantiateWindowDelegate(Window window);
 

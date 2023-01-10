@@ -1,59 +1,47 @@
-using System;
 using Asteroids.Configs;
 using Asteroids.Enemies;
 using Asteroids.Enums;
 using Asteroids.Player;
 using Asteroids.Player.ShootSystem;
 using Asteroids.Windows;
-using Unity.Mathematics;
-using Unity.VisualScripting;
+using BaseLogic.Controllers;
 using UnityEngine;
 using Zenject;
+using Asteroids.GameProfile;
 
-namespace Asteroids.BaseLogic
+namespace BaseLogic.Installers
 {
     public class SceneInstaller : MonoInstaller
     {
+        [SerializeField] private SceneContext sceneContext;
         [SerializeField] private Transform horizontalBounds;
         [SerializeField] private Transform verticalBounds;
         [Inject] private BalanceStorage _balanceStorage;
-        [Inject] private WindowsManager _windowsManager;
-        private static bool isFirstPlay = true;
 
         public override void InstallBindings()
         {
-            InstantiateScene();
-        }
-
-
-        private void Awake()
-        {
-            if (isFirstPlay)
-                OpenPromptWindow();
-        }
-
-        private void InstantiateScene()
-        {
             var playerViewInstance = Container.InstantiatePrefabForComponent<PlayerView>(
                 _balanceStorage.ObjectViewConfig.PlayerView,
-                Vector3.zero, quaternion.identity, null);
+                Vector3.zero, Quaternion.identity, null);
             Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
             Container.Bind<PlayerView>().FromInstance(playerViewInstance).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerHudParamsCounter>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UiController>().AsSingle().NonLazy();
             Container.Bind<EnemiesControlSystem>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerShootSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<BulletShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<RayShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
-                .WithArguments(horizontalBounds, verticalBounds);
+                .WithArguments(horizontalBounds.position, verticalBounds.position);
             InstantiatePools();
             Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
-
+            Container.Bind<GameProfile>().AsSingle().NonLazy();
             var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);
             Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();
-
-            _windowsManager.Open<Hud, WindowSetup.Empty>(null);
+            Container.BindInterfacesAndSelfTo<GameStateController>().AsSingle().NonLazy();
+            ZenjectInjectionSystem.UpdateContext(sceneContext);
         }
-
+        
         private void InstantiatePools()
         {
             Container.BindFactory<EnemyView, EnemyView.AsteroidFactory>()
@@ -61,7 +49,7 @@ namespace Asteroids.BaseLogic
                 // for IL2CPP to work we need our pool class to be used explicitly here
                 .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
                     .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.Asteroid))
+                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.Asteroid))
                     .UnderTransformGroup("Enemies"));
             
             Container.BindFactory<EnemyView, EnemyView.AsteroidParticleFactory>()
@@ -69,7 +57,7 @@ namespace Asteroids.BaseLogic
                 // for IL2CPP to work we need our pool class to be used explicitly here
                 .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
                     .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.AsteroidParticle))
+                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.AsteroidParticle))
                     .UnderTransformGroup("Enemies"));
             
             Container.BindFactory<EnemyView, EnemyView.SaucerFactory>()
@@ -77,21 +65,8 @@ namespace Asteroids.BaseLogic
                 // for IL2CPP to work we need our pool class to be used explicitly here
                 .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
                     .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy(EnemyType.Saucer))
+                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.Saucer))
                     .UnderTransformGroup("Enemies"));
-        }
-
-        private void OpenPromptWindow()
-        {
-            _windowsManager.Open<PromptWindow, PromptWindowSetup>(new PromptWindowSetup()
-            {
-                onOkButtonClick = () =>
-                {
-                    _windowsManager.Close<PromptWindow>();
-                    isFirstPlay = false;
-                },
-                promptText = "Hold the lef mouse button to shoot bullets\nHold the right mouse button to shoot ray"
-            });
         }
     }
 

@@ -9,7 +9,9 @@ namespace Asteroids.Configs
     public class WeaponConfig : ScriptableObject
     {
         [SerializeField] private List<WeaponView> weaponsList;
+        
         private Dictionary<WeaponType, WeaponView> _weaponsDict;
+        
         [SerializeField] private int _rayShootCount;
         [SerializeField] private int _reloadTime;
         [SerializeField] private int _shootSpeed;
@@ -22,14 +24,13 @@ namespace Asteroids.Configs
         
         public WeaponView GetWeaponView(WeaponType weaponType)
         {
-            if (_weaponsDict == null)
-            {
-                _weaponsDict = new Dictionary<WeaponType, WeaponView>();
-                foreach (var weapon in weaponsList)
-                {
-                    _weaponsDict.Add(weapon.WeaponType, weapon);
-                }
-            }
+            if (_weaponsDict != null)
+                return _weaponsDict[weaponType];
+            
+            _weaponsDict = new Dictionary<WeaponType, WeaponView>();
+            
+            foreach (var weapon in weaponsList)
+                _weaponsDict.Add(weapon.WeaponType, weapon);
 
             return _weaponsDict[weaponType];
         }

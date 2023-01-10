@@ -380,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4dd4437822cb514c97e84dd11a1ed55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneContext: {fileID: 541765539}
   horizontalBounds: {fileID: 524178750}
   verticalBounds: {fileID: 2104349834}
 --- !u!1 &2104349833

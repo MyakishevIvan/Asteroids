@@ -1,23 +1,14 @@
-﻿using System;
-using Asteroids.Helper;
-using Asteroids.Player.ShootSystem;
-using Asteroids.Windows;
+﻿using Asteroids.Helper;
+using Asteroids.Signals;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Asteroids.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [Inject] private PlayerShootSystem _playerShootSystem;
         [Inject] private PlayerMovementSystem _playerMovement;
-        [Inject] private PlayerHudParams _playerHudParams;
-        
-        private void Start()
-        {
-            _playerHudParams.Score = 0;
-        }
+        [Inject] private SignalBus _signalBus;
         
         private void Update()
         {
@@ -26,21 +17,9 @@ namespace Asteroids.Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
             {
-                var setup = new PromptWindowSetup()
-                {
-                    promptText = "You died\nScore " + _playerHudParams.Score,
-                    onOkButtonClick = () =>
-                    {
-                        WindowsManager.Instance.Close<PromptWindow>();
-                        WindowsManager.Instance.Close<Hud>();
-                        SceneManager.LoadScene("BaseScene", LoadSceneMode.Single);
-                    }
-                };
-
-                WindowsManager.Instance.Open<PromptWindow, PromptWindowSetup>(setup);
-                CoroutinesManager.StopAllRoutines();
+                _signalBus.Fire(new EndGameSignal());
                 Destroy(gameObject);
             }
         }
