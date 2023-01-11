@@ -2,7 +2,7 @@
 using Asteroids.Configs;
 using Asteroids.Enums;
 using Asteroids.Helper;
-using Asteroids.Windows;
+using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
 
@@ -11,7 +11,8 @@ namespace Asteroids.Player.ShootSystem
     public class RayShootCreator : ShootingCreator
     {
         [Inject] private BalanceStorage _balanceStorage;
-        [Inject] private PlayerHudParamsCounter _playerHudParamsCounter;
+        [Inject] private PlayerStatsStorage _playerStatsStorage;
+        [Inject] private SignalBus _signalBus;
         private Coroutine _reloadRoutine;
         
         protected override void SelectWeapon()
@@ -33,14 +34,14 @@ namespace Asteroids.Player.ShootSystem
         
         private bool CanStartRayRayShooting()
         {
-            if (_playerHudParamsCounter.rayReloadTime != 0)
+            if (_playerStatsStorage.RayReloadTime != 0)
                 return false;
 
-            _playerHudParamsCounter.RayCount--;
+            _playerStatsStorage.RayCount--;
 
-            if (_playerHudParamsCounter.RayCount == 0)
+            if (_playerStatsStorage.RayCount == 0)
             {
-                _playerHudParamsCounter.rayReloadTime = _balanceStorage.WeaponConfig.ReloadTime;
+                _signalBus.Fire<RayEndedSignal>();
                 _reloadRoutine = CoroutinesManager.StartRoutine(SpendReloadTime());
             }
             return true;
@@ -48,13 +49,13 @@ namespace Asteroids.Player.ShootSystem
 
         private IEnumerator SpendReloadTime()
         {
-            while (_playerHudParamsCounter.rayReloadTime != 0)
+            while (_playerStatsStorage.RayReloadTime != 0)
             {
                 yield return new WaitForSeconds(1);
-                _playerHudParamsCounter.rayReloadTime--;
+                _playerStatsStorage.RayReloadTime--;
             }
 
-            _playerHudParamsCounter.RayCount = _balanceStorage.WeaponConfig.RayShootCount;
+            _signalBus.Fire<RayReloadTimeEned>();
             CoroutinesManager.StopRoutine(_reloadRoutine);
         }
         

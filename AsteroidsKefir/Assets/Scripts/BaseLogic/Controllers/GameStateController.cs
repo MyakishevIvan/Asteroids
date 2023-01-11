@@ -13,7 +13,6 @@ namespace BaseLogic.Controllers
     public class GameStateController : IInitializable, ITickable
     {
         [Inject] private UiController _uiController;
-        [Inject] private PlayerHudParamsCounter _playerHudParamsCounter;
         [Inject] private EnemiesSpawner _enemiesSpawner;
         [Inject] private GameProfile _gameProfile;
         [Inject] private SignalBus _signalBus;
@@ -46,7 +45,6 @@ namespace BaseLogic.Controllers
         {
             CoroutinesManager.StopAllRoutines();
             _enemiesSpawner.RemoveEnemies();
-            _playerHudParamsCounter.StopCountParams();
             _uiController.OpenLoseGamePrompt(StartGame);
             _playerShootSystem.UnSubscribeShootEvents();
             _playerController.DisablePlayer();

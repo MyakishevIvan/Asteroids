@@ -10,7 +10,6 @@ namespace Asteroids.Player.ShootSystem
 {
     public class PlayerShootSystem : IDisposable
     {
-        [Inject] private PlayerHudParamsCounter _hudParamsCounter;
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private PlayerInputAction _playerInputAction;
         [Inject] private BulletShootCreator _bulletShootCreator;

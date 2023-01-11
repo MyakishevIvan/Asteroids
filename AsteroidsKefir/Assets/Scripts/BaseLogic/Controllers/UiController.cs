@@ -1,4 +1,5 @@
 using System;
+using Asteroids.Player;
 using Asteroids.Windows;
 using Zenject;
 
@@ -7,13 +8,13 @@ namespace BaseLogic.Controllers
     public class UiController
     {
         [Inject] private WindowsManager _windowsManager;
-        [Inject] private PlayerHudParamsCounter _playerHudParamsCounter;
+        [Inject] private PlayerStatsStorage _playerStatsStorage;
         
         public void OpenHud()
         {
             _windowsManager.Open<Hud, HudSetup>(new HudSetup()
             {
-                GetPlayerParams = () => _playerHudParamsCounter.ToString()
+                GetPlayerParams = () => _playerStatsStorage.ToString()
             });
         }
         
@@ -34,7 +35,7 @@ namespace BaseLogic.Controllers
         {
             var setup = new PromptWindowSetup()
             {
-                promptText = "You died\nScore " + _playerHudParamsCounter.Score,
+                promptText = "You died\nScore " + _playerStatsStorage.Score,
                 onOkButtonClick = () =>
                 {
                     _windowsManager.Close<PromptWindow>();

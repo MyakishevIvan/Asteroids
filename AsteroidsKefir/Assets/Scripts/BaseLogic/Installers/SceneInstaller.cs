@@ -25,7 +25,6 @@ namespace BaseLogic.Installers
                 Vector3.zero, Quaternion.identity, null);
             Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
             Container.Bind<PlayerView>().FromInstance(playerViewInstance).AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerHudParamsCounter>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UiController>().AsSingle().NonLazy();
             Container.Bind<EnemiesControlSystem>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerShootSystem>().AsSingle();
@@ -38,6 +37,7 @@ namespace BaseLogic.Installers
             Container.Bind<GameProfile>().AsSingle().NonLazy();
             var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);
             Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerStatsStorage>().AsSingle().WithArguments(playerViewInstance.transform).NonLazy();
             Container.BindInterfacesAndSelfTo<GameStateController>().AsSingle().NonLazy();
             ZenjectInjectionSystem.UpdateContext(sceneContext);
         }

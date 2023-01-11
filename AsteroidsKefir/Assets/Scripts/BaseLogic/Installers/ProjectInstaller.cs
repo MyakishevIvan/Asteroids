@@ -25,6 +25,8 @@ namespace BaseLogic.Installers
             Container.DeclareSignal<AsteroidBlowSignal>();
             Container.DeclareSignal<StartGameSignal>();
             Container.DeclareSignal<EndGameSignal>();
+            Container.DeclareSignal<RayEndedSignal>();
+            Container.DeclareSignal<RayReloadTimeEned>();
         }
 
         private void BindSystems()

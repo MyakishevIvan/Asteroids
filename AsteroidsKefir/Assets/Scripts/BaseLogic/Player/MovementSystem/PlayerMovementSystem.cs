@@ -15,7 +15,6 @@ namespace Asteroids.Player
         private Vector2 _verticalBounds;
         private Vector2 _currentInput;
         private Vector2 _smoothInputVelocity;
-        private Vector2 _oldPosition;
 
         private Transform PlayerTransform => _playerView.transform;
         private PlayerConfig PlayerConfig => _balanceStorage.PlayerConfig;
@@ -28,7 +27,6 @@ namespace Asteroids.Player
 
         public void Initialize()
         {
-            _oldPosition = _playerView.transform.position;
             _playerInputAction.Enable();
         }
 
@@ -47,7 +45,6 @@ namespace Asteroids.Player
 
             MovePlayer();
             CheckBounds();
-            _oldPosition = _playerView.transform.position;
         }
 
         private void MovePlayer()

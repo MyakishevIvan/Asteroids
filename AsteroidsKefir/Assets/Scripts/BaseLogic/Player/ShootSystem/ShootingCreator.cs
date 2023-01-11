@@ -11,7 +11,6 @@ namespace Asteroids.Player.ShootSystem
     {
         [Inject] private PlayerView _playerView;
         [Inject] private DiContainer _diContainer;
-        [Inject] private PlayerHudParamsCounter _playerHudParamsCounter;
         [Inject] private BalanceStorage _balanceStorage;
         protected WeaponView _weapon;
         private GameObject _weaponContainer;
@@ -24,10 +23,7 @@ namespace Asteroids.Player.ShootSystem
         
         public void Initialize()
         {
-            _playerHudParamsCounter.RayCount = _balanceStorage.WeaponConfig.RayShootCount;
-            _playerHudParamsCounter.rayReloadTime = 0;
             _weaponContainer = new GameObject(_containerName+"Container");
-            _playerHudParamsCounter.RayCount = _balanceStorage.WeaponConfig.RayShootCount;
             SelectWeapon();
         }
 

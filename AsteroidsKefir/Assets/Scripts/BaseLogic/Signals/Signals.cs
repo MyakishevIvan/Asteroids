@@ -21,4 +21,14 @@ namespace Asteroids.Signals
     {
         
     }
+    
+    public class RayEndedSignal
+    {
+        
+    }
+    
+    public class RayReloadTimeEned
+    {
+        
+    }
 }
