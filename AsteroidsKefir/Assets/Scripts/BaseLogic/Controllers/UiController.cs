@@ -38,7 +38,6 @@ namespace BaseLogic.Controllers
                 onOkButtonClick = () =>
                 {
                     _windowsManager.Close<PromptWindow>();
-                    _windowsManager.Close<Hud>();
                     endGameAction();
                 }
             };

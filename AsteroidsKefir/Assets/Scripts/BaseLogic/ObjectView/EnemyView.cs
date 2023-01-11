@@ -24,7 +24,7 @@ namespace Asteroids.Enemies
 
         public void Dispose()
         {
-            _pool.Despawn(this);
+            _pool?.Despawn(this);
         }
 
         public class AsteroidFactory : PlaceholderFactory<EnemyView>

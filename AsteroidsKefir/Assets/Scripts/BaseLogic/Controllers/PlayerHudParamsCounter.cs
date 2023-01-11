@@ -30,18 +30,16 @@ namespace Asteroids.Windows
         {
             _signalBus.TryUnsubscribe<AsteroidBlowSignal>(IncreaseScore);
             _signalBus.TryUnsubscribe<StartGameSignal>(StartCountParams);
-            _signalBus.TryUnsubscribe<EndGameSignal>(StopCountParams);
             
             _signalBus.Subscribe<AsteroidBlowSignal>(IncreaseScore);
             _signalBus.Subscribe<StartGameSignal>(StartCountParams);
-            _signalBus.Subscribe<EndGameSignal>(StopCountParams);
             
             var type = GetType();
            _fields = type.GetFields().Where(x => x.IsPublic).ToArray();
            _properties = type.GetProperties();
         }
 
-        private void StopCountParams(EndGameSignal signal)
+        public void StopCountParams()
         {
             CoroutinesManager.StopRoutine(_paramsCalculationRoutine);
             ParamsReset();
@@ -51,11 +49,14 @@ namespace Asteroids.Windows
         {
             speed = 0;
             angel = 0;
+            Score = 0;
             coordinates = Vector2.zero;
+            rayReloadTime = 0;
         }
         
         private void StartCountParams(StartGameSignal signal)
         {
+            RayCount = 3;
             _paramsCalculationRoutine = CoroutinesManager.StartRoutine(ParamsCalculation());
         }
 

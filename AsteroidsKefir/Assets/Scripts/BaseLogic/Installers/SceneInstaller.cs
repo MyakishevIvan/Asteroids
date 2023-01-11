@@ -34,7 +34,7 @@ namespace BaseLogic.Installers
             Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
                 .WithArguments(horizontalBounds.position, verticalBounds.position);
             InstantiatePools();
-            Container.BindInterfacesAndSelfTo<EnemySpawner>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<EnemiesSpawner>().AsSingle().NonLazy();
             Container.Bind<GameProfile>().AsSingle().NonLazy();
             var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);
             Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();

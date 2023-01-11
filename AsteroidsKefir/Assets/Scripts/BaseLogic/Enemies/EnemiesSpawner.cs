@@ -8,7 +8,7 @@ using Asteroids.Helper;
 using UnityEngine;
 using Zenject;
 
-public class EnemySpawner : IInitializable
+public class EnemiesSpawner : IInitializable
 {
     [Inject] private BalanceStorage _balanceStorage;
     [Inject] private DiContainer _diContainer;
@@ -16,15 +16,46 @@ public class EnemySpawner : IInitializable
     [Inject] private EnemyView.AsteroidFactory _asteroidFactory;
     [Inject] private EnemyView.AsteroidParticleFactory _asteroidParticleFactory;
     [Inject] private EnemyView.SaucerFactory _saucerFactory;
-    private Transform _playerTransform;
 
+    private Transform _playerTransform;
+    private List<EnemyController> _enemyControllers;
 
     public void Initialize()
     {
+        _enemyControllers = new List<EnemyController>();
         _signalBus.Subscribe<AsteroidBlowSignal>(InstantiateAsteroidParticle);
-        CoroutinesManager.StartRoutine(EnemySpawnRoutine());
     }
 
+    private void InstantiateAsteroidParticle(AsteroidBlowSignal signal)
+    {
+        for (int i = 0; i < _balanceStorage.EnemiesConfig.EnemyParticlesCount; i++)
+        {
+            var asteroidParticle = CreatEnemy(EnemyType.AsteroidParticle);
+            Vector2 position = signal.AsroidTransform.position;
+            position += Random.insideUnitCircle;
+            asteroidParticle.transform.position = position;
+
+            var enemyController = _diContainer.InstantiateComponent<EnemyController>(asteroidParticle.gameObject);
+            _enemyControllers.Add(enemyController);
+            enemyController.SetDirection(Random.insideUnitCircle.normalized);
+        }
+    }
+    
+    public void RemoveEnemies()
+    {
+        foreach (var enemy in _enemyControllers)
+        {
+            enemy.EnemyView.Dispose();
+        }
+
+        _enemyControllers.Clear();
+    }
+    
+    public void StartSpawnEnemies()
+    {
+        CoroutinesManager.StartRoutine(EnemySpawnRoutine());
+    }
+    
     private IEnumerator EnemySpawnRoutine()
     {
         while (true)
@@ -47,6 +78,16 @@ public class EnemySpawner : IInitializable
         }
     }
 
+    private void GetEnemyInstantiateParams(out Vector2 spawnDirection, out Vector2 spawnPoint,
+        out Quaternion rotation)
+    {
+        spawnDirection = Random.insideUnitCircle.normalized;
+        spawnPoint = spawnDirection * _balanceStorage.EnemiesConfig.EnemySpawnRadius;
+        var variance = Random.Range(-_balanceStorage.EnemiesConfig.TrajectoryVariance,
+            _balanceStorage.EnemiesConfig.TrajectoryVariance);
+        rotation = Quaternion.AngleAxis(variance, Vector3.forward);
+    }
+
     private void InstantiateEnemy(Vector2 spawnPoint, Quaternion rotation, Vector2 spawnDirection,
         EnemyType enemyType)
     {
@@ -55,7 +96,7 @@ public class EnemySpawner : IInitializable
 
         var direction = rotation * -spawnDirection;
         var enemyController = _diContainer.InstantiateComponent<EnemyController>(enemyObj.gameObject);
-
+        _enemyControllers.Add(enemyController);
         if (enemyType == EnemyType.Asteroid || enemyType == EnemyType.AsteroidParticle)
             enemyController.SetDirection(direction);
     }
@@ -77,29 +118,5 @@ public class EnemySpawner : IInitializable
         }
 
         return enemyView;
-    }
-
-    private void GetEnemyInstantiateParams( out Vector2 spawnDirection, out Vector2 spawnPoint,
-        out Quaternion rotation)
-    {
-        spawnDirection = Random.insideUnitCircle.normalized;
-        spawnPoint = spawnDirection * _balanceStorage.EnemiesConfig.EnemySpawnRadius;
-        var variance = Random.Range(-_balanceStorage.EnemiesConfig.TrajectoryVariance,
-            _balanceStorage.EnemiesConfig.TrajectoryVariance);
-        rotation = Quaternion.AngleAxis(variance, Vector3.forward);
-    }
-
-    private void InstantiateAsteroidParticle(AsteroidBlowSignal signal)
-    {
-        for (int i = 0; i < _balanceStorage.EnemiesConfig.EnemyParticlesCount; i++)
-        {
-            var asteroidParticle = CreatEnemy(EnemyType.AsteroidParticle);
-            Vector2 position = signal.AsroidTransform.position;
-            position += Random.insideUnitCircle;
-            asteroidParticle.transform.position = position;
-
-            var enemyController = _diContainer.InstantiateComponent<EnemyController>(asteroidParticle.gameObject);
-            enemyController.SetDirection(Random.insideUnitCircle.normalized);
-        }
     }
 }

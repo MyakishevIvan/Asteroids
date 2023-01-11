@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Asteroids.Player.ShootSystem
 {
-    public class PlayerShootSystem : IInitializable, IDisposable
+    public class PlayerShootSystem : IDisposable
     {
         [Inject] private PlayerHudParamsCounter _hudParamsCounter;
         [Inject] private BalanceStorage _balanceStorage;
@@ -19,19 +19,26 @@ namespace Asteroids.Player.ShootSystem
         private float _currentTime;
         
         
-        public void Initialize()
+        public void SubscribeShootEvents()
         {
-            _playerInputAction.Player.ShootBullet.performed += ShootBulletOnperformed;
-            _playerInputAction.Player.ShootRay.performed += ShootRayOnperformed;
+            _playerInputAction.Player.ShootBullet.performed += ShootBulletOnPerformed;
+            _playerInputAction.Player.ShootRay.performed += ShootRayOnPerformed;
+            _currentTime = 0;
             _previousTime = _balanceStorage.WeaponConfig.ShootDelay;
         }
 
-        private void ShootBulletOnperformed(InputAction.CallbackContext obj)
+        public void UnSubscribeShootEvents()
+        {
+            _playerInputAction.Player.ShootBullet.performed -= ShootBulletOnPerformed;
+            _playerInputAction.Player.ShootRay.performed -= ShootRayOnPerformed;
+        }
+        
+        private void ShootBulletOnPerformed(InputAction.CallbackContext obj)
         {
             StartShooting(_bulletShootCreator);
         }
 
-        private void ShootRayOnperformed(InputAction.CallbackContext obj)
+        private void ShootRayOnPerformed(InputAction.CallbackContext obj)
         {
             StartShooting(_rayShootCreator);
         }

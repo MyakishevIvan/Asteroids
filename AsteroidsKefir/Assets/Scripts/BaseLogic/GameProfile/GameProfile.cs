@@ -16,5 +16,10 @@ namespace Asteroids.GameProfile
             var isPlayerPlayedBefore = PlayerPrefs.GetInt(TextNameHelper.IS_USER_PLAYED_BEFORE) == 1;
             return hasKey && isPlayerPlayedBefore;
         }
+
+        public void RemoveSave()
+        {
+            PlayerPrefs.DeleteAll();
+        }
     }
 }
