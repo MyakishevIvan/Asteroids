@@ -2,6 +2,7 @@
 using Asteroids.Configs;
 using Asteroids.Enums;
 using Asteroids.Helper;
+using Asteroids.Player.Weapon;
 using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
@@ -13,23 +14,16 @@ namespace Asteroids.Player.ShootSystem
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private PlayerStatsStorage _playerStatsStorage;
         [Inject] private SignalBus _signalBus;
+        [Inject] private RayWeapon.RayPool _pool;
         private Coroutine _reloadRoutine;
-        
-        protected override void SelectWeapon()
-        {
-            _weapon = _balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Ray);
-        }
-        
-        public RayShootCreator( ) : base("Ray")
-        {
-        }
+        private BaseWeapon _currentRay;
 
-        public override void Shoot()
+        public override void CreatWeapon()
         {
             if(!CanStartRayRayShooting())
                 return;
             
-            base.Shoot();
+            _currentRay = _pool.Spawn(_playerView);
         }
         
         private bool CanStartRayRayShooting()
@@ -58,6 +52,5 @@ namespace Asteroids.Player.ShootSystem
             _signalBus.Fire<RayReloadTimeEned>();
             CoroutinesManager.StopRoutine(_reloadRoutine);
         }
-        
     }
 }

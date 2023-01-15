@@ -1,10 +1,8 @@
 ﻿using System;
 using Asteroids.Configs;
-using Asteroids.Windows;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
-
 
 namespace Asteroids.Player.ShootSystem
 {
@@ -16,8 +14,7 @@ namespace Asteroids.Player.ShootSystem
         [Inject] private RayShootCreator _rayShootCreator;
         private float _previousTime;
         private float _currentTime;
-        
-        
+
         public void SubscribeShootEvents()
         {
             _playerInputAction.Player.ShootBullet.performed += ShootBulletOnPerformed;
@@ -50,7 +47,7 @@ namespace Asteroids.Player.ShootSystem
                 return;
             
             _previousTime = Time.time;
-            shootingCreator.Shoot();
+            shootingCreator.CreatWeapon();
         }
 
         public void Dispose()

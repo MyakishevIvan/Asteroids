@@ -13,9 +13,7 @@ public class EnemiesSpawner : IInitializable
     [Inject] private BalanceStorage _balanceStorage;
     [Inject] private DiContainer _diContainer;
     [Inject] private SignalBus _signalBus;
-    [Inject] private EnemyView.AsteroidFactory _asteroidFactory;
-    [Inject] private EnemyView.AsteroidParticleFactory _asteroidParticleFactory;
-    [Inject] private EnemyView.SaucerFactory _saucerFactory;
+
 
     private Transform _playerTransform;
     private List<EnemyController> _enemyControllers;
@@ -106,15 +104,15 @@ public class EnemiesSpawner : IInitializable
         EnemyView enemyView = null;
         switch (enemyType)
         {
-            case EnemyType.Asteroid:
-                enemyView = _asteroidFactory.Create();
-                break;
-            case EnemyType.AsteroidParticle:
-                enemyView = _asteroidParticleFactory.Create();
-                break;
-            case EnemyType.Saucer:
-                enemyView = _saucerFactory.Create();
-                break;
+            // case EnemyType.Asteroid:
+            //     enemyView = _asteroidFactory.Create();
+            //     break;
+            // case EnemyType.AsteroidParticle:
+            //     enemyView = _asteroidParticleFactory.Create();
+            //     break;
+            // case EnemyType.Saucer:
+            //     enemyView = _saucerFactory.Create();
+            //     break;
         }
 
         return enemyView;

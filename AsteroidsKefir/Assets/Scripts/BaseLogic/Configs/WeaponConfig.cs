@@ -8,9 +8,10 @@ namespace Asteroids.Configs
     [CreateAssetMenu(fileName =nameof(WeaponConfig), menuName = "Configs/"+nameof(WeaponConfig))]
     public class WeaponConfig : ScriptableObject
     {
-        [SerializeField] private List<WeaponView> weaponsList;
+        [SerializeField] private GameObject BulletObject;
+        [SerializeField] private GameObject RayObject;
         
-        private Dictionary<WeaponType, WeaponView> _weaponsDict;
+        private Dictionary<WeaponType, GameObject> _weaponsDict;
         
         [SerializeField] private int _rayShootCount;
         [SerializeField] private int _reloadTime;
@@ -22,15 +23,18 @@ namespace Asteroids.Configs
         public int ShootSpeed => _shootSpeed;
         public int ShootDelay => _shootDelay;
         
-        public WeaponView GetWeaponView(WeaponType weaponType)
+        public GameObject GetWeaponView(WeaponType weaponType)
         {
             if (_weaponsDict != null)
                 return _weaponsDict[weaponType];
             
-            _weaponsDict = new Dictionary<WeaponType, WeaponView>();
+            _weaponsDict = new Dictionary<WeaponType, GameObject>()
+            {
+                { WeaponType.Bullet , BulletObject},
+                { WeaponType.Ray , RayObject}
+            };
             
-            foreach (var weapon in weaponsList)
-                _weaponsDict.Add(weapon.WeaponType, weapon);
+         
 
             return _weaponsDict[weaponType];
         }

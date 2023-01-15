@@ -1,6 +1,7 @@
 ﻿using Asteroids.Configs;
 using Asteroids.Enemies;
 using Asteroids.Enums;
+using Asteroids.Helper;
 using UnityEngine;
 using Zenject;
 
@@ -10,16 +11,13 @@ namespace Asteroids.Player.Weapon
     {
         [Inject] private BalanceStorage _balanceStorage;
         private Vector3 _direction;
-        private WeaponType _weaponType;
+        private BaseWeapon _weapon;
 
         private void Awake()
         {
-            _weaponType = GetComponent<WeaponView>().WeaponType;
-            Invoke(nameof(DestroyWeapon), 5f);
+            _weapon = GetComponent<BaseWeapon>();
         }
-
-        private void DestroyWeapon() => Destroy(gameObject);
-
+        
         private void Update()
         {
             if (_direction == Vector3.zero)
@@ -28,20 +26,30 @@ namespace Asteroids.Player.Weapon
             transform.position += _direction * (_balanceStorage.WeaponConfig.ShootSpeed * Time.deltaTime);
         }
 
-        public void AddDirection(Vector3 direction)
+        private void OnDisable()
+        {
+            _direction = Vector3.zero;
+        }
+        
+        public void Init(Vector3 direction)
         {
             _direction = direction;
+            Invoke(nameof(DestroyWeapon), 2);
         }
 
+        private void DestroyWeapon()
+        {
+            if (gameObject.activeSelf)
+                _weapon.Despawn();
+        }
+        
         protected void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (col.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
             {
-                if (_weaponType == WeaponType.Bullet)
-                    Destroy(gameObject);
-
-                var enemyController = col.gameObject.GetComponent<EnemyController>();
-                enemyController.DamageEnemy(_weaponType);
+                _weapon.TakeDamage(()=> CancelInvoke(nameof(DestroyWeapon)));
+                var enemyController = col.gameObject.GetComponent<BaseEnemyController>();
+                enemyController.TakeDamage(_weapon);
             }
         }
     }

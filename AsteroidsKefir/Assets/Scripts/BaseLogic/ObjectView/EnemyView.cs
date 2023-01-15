@@ -26,17 +26,5 @@ namespace Asteroids.Enemies
         {
             _pool?.Despawn(this);
         }
-
-        public class AsteroidFactory : PlaceholderFactory<EnemyView>
-        {
-        }
-        
-        public class AsteroidParticleFactory : PlaceholderFactory<EnemyView>
-        {
-        }
-
-        public class SaucerFactory : PlaceholderFactory<EnemyView>
-        {
-        }
     }
 }

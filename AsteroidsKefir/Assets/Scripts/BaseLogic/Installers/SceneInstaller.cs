@@ -3,11 +3,11 @@ using Asteroids.Enemies;
 using Asteroids.Enums;
 using Asteroids.Player;
 using Asteroids.Player.ShootSystem;
-using Asteroids.Windows;
 using BaseLogic.Controllers;
 using UnityEngine;
 using Zenject;
 using Asteroids.GameProfile;
+using Asteroids.Player.Weapon;
 
 namespace BaseLogic.Installers
 {
@@ -20,9 +20,13 @@ namespace BaseLogic.Installers
 
         public override void InstallBindings()
         {
+            InstantiatePools();
             var playerViewInstance = Container.InstantiatePrefabForComponent<PlayerView>(
                 _balanceStorage.ObjectViewConfig.PlayerView,
                 Vector3.zero, Quaternion.identity, null);
+            Container.BindInterfacesAndSelfTo<AsteroidFactory>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<SaucerFactory>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<AsteroidParticleFactory>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
             Container.Bind<PlayerView>().FromInstance(playerViewInstance).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UiController>().AsSingle().NonLazy();
@@ -32,47 +36,43 @@ namespace BaseLogic.Installers
             Container.BindInterfacesAndSelfTo<RayShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
                 .WithArguments(horizontalBounds.position, verticalBounds.position);
-            InstantiatePools();
-            Container.BindInterfacesAndSelfTo<EnemiesSpawner>().AsSingle().NonLazy();
             Container.Bind<GameProfile>().AsSingle().NonLazy();
             var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);
             Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerStatsStorage>().AsSingle().WithArguments(playerViewInstance.transform).NonLazy();
             Container.BindInterfacesAndSelfTo<GameStateController>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<EnemiesManager>().AsSingle().NonLazy();
             ZenjectInjectionSystem.UpdateContext(sceneContext);
         }
         
         private void InstantiatePools()
         {
-            Container.BindFactory<EnemyView, EnemyView.AsteroidFactory>()
-                // We could just use FromMonoPoolableMemoryPool here instead, but
-                // for IL2CPP to work we need our pool class to be used explicitly here
-                .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
-                    .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.Asteroid))
-                    .UnderTransformGroup("Enemies"));
+            Container.BindMemoryPool<Asteroid, Asteroid.AsteroidPool>()
+                .WithInitialSize(5)
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<Asteroid>())
+                .UnderTransformGroup("Enemies");
             
-            Container.BindFactory<EnemyView, EnemyView.AsteroidParticleFactory>()
-                // We could just use FromMonoPoolableMemoryPool here instead, but
-                // for IL2CPP to work we need our pool class to be used explicitly here
-                .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
-                    .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.AsteroidParticle))
-                    .UnderTransformGroup("Enemies"));
+            Container.BindMemoryPool<Saucer, Saucer.SaucerPool>()
+                .WithInitialSize(5)
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<Saucer>())
+                .UnderTransformGroup("Enemies");
             
-            Container.BindFactory<EnemyView, EnemyView.SaucerFactory>()
-                // We could just use FromMonoPoolableMemoryPool here instead, but
-                // for IL2CPP to work we need our pool class to be used explicitly here
-                .FromPoolableMemoryPool<EnemyView, EnemyViewPool>(poolBinder => poolBinder
-                    .WithInitialSize(5)
-                    .FromComponentInNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemyView(EnemyType.Saucer))
-                    .UnderTransformGroup("Enemies"));
-        }
-    }
+            Container.BindMemoryPool<AsteroidParticle, AsteroidParticle.AsteroidPool>()
+                .WithInitialSize(5)
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<AsteroidParticle>())
+                .UnderTransformGroup("Enemies");
+            
 
-    // We could just use FromMonoPoolableMemoryPool above, but we have to use these instead
-    // for IL2CPP to work
-    class EnemyViewPool : MonoPoolableMemoryPool<IMemoryPool, EnemyView>
-    {
+            Container.BindMemoryPool<BulletWeapon, BulletWeapon.BulletPool>()
+                .WithInitialSize(5)
+                .FromNewComponentOnNewPrefab(_balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Bullet))
+                .UnderTransformGroup("Bullets");
+            
+            Container.BindMemoryPool<RayWeapon, RayWeapon.RayPool>()
+                .WithInitialSize(5)
+                .FromNewComponentOnNewPrefab(_balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Ray))
+                .UnderTransformGroup("Rays");
+
+        }
     }
 }

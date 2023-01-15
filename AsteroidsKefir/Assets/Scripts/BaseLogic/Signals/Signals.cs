@@ -1,3 +1,4 @@
+using Asteroids.Enemies;
 using UnityEngine;
 
 namespace Asteroids.Signals
@@ -30,5 +31,14 @@ namespace Asteroids.Signals
     public class RayReloadTimeEned
     {
         
+    }
+
+    public class RemoveEnemyFromActiveList
+    {
+        public BaseEnemy Enemy { get; }
+        public RemoveEnemyFromActiveList(BaseEnemy enemy)
+        {
+            Enemy = enemy;
+        }
     }
 }

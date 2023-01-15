@@ -1,3 +1,15 @@
 fileFormatVersion: 2
 guid: e0cac21ad35845a98e5a33f29f741b9b
-timeCreated: 1655566890
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - playerView: {fileID: 5136152475002862121, guid: 9c2d294a777c50940b3ebfeea9c91cbe, type: 3}
+  - asteroid: {fileID: 1575447505383635343, guid: d1da55429ec7b184f8adb3737f1721c4, type: 3}
+  - saucer: {fileID: 5582768925898126755, guid: 07bd9dddcfc19614bb6041fa4c462be2, type: 3}
+  - asteroidParticle: {fileID: 6766039807732324552, guid: b44b42acbfab187498bdbac5b01d6b4a, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

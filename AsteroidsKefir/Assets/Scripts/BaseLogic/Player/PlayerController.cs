@@ -1,5 +1,4 @@
-﻿using System;
-using Asteroids.Helper;
+﻿using Asteroids.Helper;
 using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
@@ -23,8 +22,8 @@ namespace Asteroids.Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
-                _signalBus.Fire(new EndGameSignal());
+            // if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
+            //     _signalBus.Fire(new EndGameSignal());
         }
         
         public void DisablePlayer()

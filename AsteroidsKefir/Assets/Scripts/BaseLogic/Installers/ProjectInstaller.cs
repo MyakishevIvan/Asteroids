@@ -27,6 +27,7 @@ namespace BaseLogic.Installers
             Container.DeclareSignal<EndGameSignal>();
             Container.DeclareSignal<RayEndedSignal>();
             Container.DeclareSignal<RayReloadTimeEned>();
+            Container.DeclareSignal<RemoveEnemyFromActiveList>();
         }
 
         private void BindSystems()

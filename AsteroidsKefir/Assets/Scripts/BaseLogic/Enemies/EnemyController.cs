@@ -1,6 +1,7 @@
 ﻿using System;
 using Asteroids.Configs;
 using Asteroids.Enums;
+using Asteroids.Player.Weapon;
 using UnityEngine;
 using Zenject;
 
@@ -52,9 +53,9 @@ namespace Asteroids.Enemies
                 _enemiesControlSystem.UpdateSaucerMovement(transform, _speed);
         }
 
-        public void DamageEnemy(WeaponType weaponType)
+        public void DamageEnemy(BaseWeapon weapon)
         {
-            _enemiesControlSystem.DamageEnemy(EnemyView.EnemyType, weaponType, this);
+            // _enemiesControlSystem.DamageEnemy(EnemyView.EnemyType, weaponType, this);
         }
     }
 }

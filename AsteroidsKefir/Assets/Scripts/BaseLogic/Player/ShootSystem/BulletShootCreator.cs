@@ -1,8 +1,5 @@
-﻿using System;
-using Asteroids.Configs;
-using Asteroids.Enums;
+﻿using Asteroids.Configs;
 using Asteroids.Player.Weapon;
-using UnityEngine;
 using Zenject;
 
 namespace Asteroids.Player.ShootSystem
@@ -10,14 +7,15 @@ namespace Asteroids.Player.ShootSystem
     public class BulletShootCreator : ShootingCreator
     {
         [Inject] private BalanceStorage _balanceStorage;
+        [Inject] private BulletWeapon.BulletPool _bulletFactory;
         
-        protected override void SelectWeapon()
+        private BaseWeapon _currentBullet;
+        
+        public override void CreatWeapon()
         {
-            _weapon = _balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Bullet);
-        }
-
-        public BulletShootCreator() : base("Bullet")
-        {
+            if(_playerView == null)
+                return;
+            _currentBullet = _bulletFactory.Spawn(_playerView);
         }
     }
 }

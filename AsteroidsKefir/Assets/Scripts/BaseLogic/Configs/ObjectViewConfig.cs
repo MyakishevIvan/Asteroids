@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Asteroids.Enemies;
-using Asteroids.Enums;
 using Asteroids.Player;
 using UnityEngine;
 
@@ -10,24 +10,28 @@ namespace Asteroids.Configs
     public class ObjectViewConfig : ScriptableObject
     {
         [SerializeField] private PlayerView playerView;
-        [SerializeField] private List<EnemyView> enemies;
-        private Dictionary<EnemyType, EnemyView> _enemyDict;
-        
+        [SerializeField] private GameObject asteroid;
+        [SerializeField] private GameObject saucer;
+        [SerializeField] private GameObject asteroidParticle;
+        private Dictionary<Type, GameObject> _enemiesDictionary;
+
         public PlayerView PlayerView => playerView;
-
-        public EnemyView GetEnemyView(EnemyType enemyType)
+        
+        public GameObject GetEnemy<T>() where T : BaseEnemy
         {
-            if (_enemyDict != null) 
-                return _enemyDict[enemyType];
-            
-            _enemyDict = new Dictionary<EnemyType, EnemyView>();
-            
-            foreach (var enemy in enemies)
-                _enemyDict.Add(enemy.EnemyType, enemy);
+            if (_enemiesDictionary != null)
+                return _enemiesDictionary[typeof(T)];
 
-            return _enemyDict[enemyType];
+            _enemiesDictionary = new Dictionary<Type, GameObject>()
+            {
+                {typeof(Asteroid), asteroid},
+                {typeof(Saucer), saucer},
+                {typeof(AsteroidParticle), asteroidParticle}
+
+            };
+            
+
+            return _enemiesDictionary[typeof(T)];
         }
     }
-
-    
 }

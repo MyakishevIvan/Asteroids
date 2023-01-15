@@ -1,48 +1,25 @@
-﻿using Asteroids.Configs;
-using Asteroids.Player.Weapon;
-using Asteroids.Windows;
+﻿using Asteroids.Player.Weapon;
 using UnityEngine;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace Asteroids.Player.ShootSystem
 {
-    public class ShootingCreator : IInitializable
+    public abstract class ShootingCreator
     {
-        [Inject] private PlayerView _playerView;
+        [Inject] protected PlayerView _playerView;
         [Inject] private DiContainer _diContainer;
-        [Inject] private BalanceStorage _balanceStorage;
-        protected WeaponView _weapon;
-        private GameObject _weaponContainer;
-        private string _containerName;
-
-        public ShootingCreator(string containerName)
-        {
-            _containerName = containerName;
-        }
         
-        public void Initialize()
-        {
-            _weaponContainer = new GameObject(_containerName+"Container");
-            SelectWeapon();
-        }
-
-        protected virtual void SelectWeapon()
-        {
-        }
-
-        public virtual void Shoot()
+        public abstract void CreatWeapon();
+        
+        protected void Shoot(BaseWeapon baseWeapon)
         {
             if(_playerView == null)
                 return;
             
-            var weaponObj = Object.Instantiate
-            (_weapon, _playerView.transform.position,
-                Quaternion.Euler(0, 0, _playerView.transform.rotation.eulerAngles.z),
-                _weaponContainer.transform);
-
-            var weaponController = _diContainer.InstantiateComponent<WeaponController>(weaponObj.gameObject);
-            weaponController.AddDirection(_playerView.transform.up);
+            baseWeapon.transform.position = _playerView.transform.position;
+            baseWeapon.transform.rotation = Quaternion.Euler(0, 0, _playerView.transform.rotation.eulerAngles.z);
+            var weaponController = _diContainer.InstantiateComponent<WeaponController>(baseWeapon.gameObject);
+            weaponController.Init(_playerView.transform.up);
         }
     }
 }
