@@ -8,7 +8,6 @@ using UnityEngine;
 using Zenject;
 using Asteroids.GameProfile;
 using Asteroids.Player.Weapon;
-using EnemiesConfig = Asteroids.Configs.EnemiesConfig;
 
 namespace BaseLogic.Installers
 {
@@ -33,7 +32,6 @@ namespace BaseLogic.Installers
             Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
             Container.Bind<PlayerView>().FromInstance(playerViewInstance).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UiController>().AsSingle().NonLazy();
-            Container.Bind<EnemiesControlSystem>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerShootSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<BulletShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<RayShootCreator>().AsSingle().NonLazy();
@@ -73,7 +71,6 @@ namespace BaseLogic.Installers
                 .WithInitialSize(5)
                 .FromNewComponentOnNewPrefab(_balanceStorage.WeaponConfig.GetWeaponView(WeaponType.Ray))
                 .UnderTransformGroup("Rays");
-
         }
     }
 }
