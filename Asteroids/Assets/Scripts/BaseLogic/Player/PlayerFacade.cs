@@ -20,9 +20,9 @@ namespace Asteroids.Player
             _playerMovement.PlayerMovementUpdate();
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D enemy)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
+            if (enemy.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
                 _signalBus.Fire(new EndGameSignal());
         }
         
