@@ -14,7 +14,7 @@ namespace BaseLogic.Controllers
         [Inject] private UiController _uiController;
         [Inject] private GameProfile _gameProfile;
         [Inject] private SignalBus _signalBus;
-        [Inject] private PlayerController _playerController;
+        [Inject] private PlayerFacade _playerFacade;
         [Inject] private PlayerShootSystem _playerShootSystem;
         [Inject] private EnemiesManager _enemiesManager;
 
@@ -35,7 +35,7 @@ namespace BaseLogic.Controllers
         {
             _signalBus.Fire(new StartGameSignal());
             _enemiesManager.StartSpawnEnemies();
-            _playerController.EnablePlayerView();
+            _playerFacade.EnablePlayerView();
             _playerShootSystem.SubscribeShootEvents();
         }
 
@@ -45,7 +45,7 @@ namespace BaseLogic.Controllers
             _enemiesManager.StopSpawnAndClearEnemies();
             _uiController.OpenLoseGamePrompt(StartGame);
             _playerShootSystem.UnSubscribeShootEvents();
-            _playerController.DisablePlayer();
+            _playerFacade.DisablePlayer();
         }
 
         public void Tick()

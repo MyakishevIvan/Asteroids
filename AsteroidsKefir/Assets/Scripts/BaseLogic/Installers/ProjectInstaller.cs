@@ -1,4 +1,5 @@
 using Asteroids.Configs;
+using Asteroids.Enemies;
 using Asteroids.Windows;
 using Asteroids.Signals;
 using BaseLogic.Controllers;

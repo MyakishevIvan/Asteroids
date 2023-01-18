@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Asteroids.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerFacade : MonoBehaviour
     {
         [Inject] private PlayerMovementSystem _playerMovement;
         [Inject] private SignalBus _signalBus;
@@ -22,8 +22,8 @@ namespace Asteroids.Player
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
-            //     _signalBus.Fire(new EndGameSignal());
+            if (other.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
+                _signalBus.Fire(new EndGameSignal());
         }
         
         public void DisablePlayer()

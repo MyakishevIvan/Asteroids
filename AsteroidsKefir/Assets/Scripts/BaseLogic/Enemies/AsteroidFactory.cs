@@ -4,9 +4,9 @@ namespace Asteroids.Enemies
 {
     public class AsteroidFactory : IEnemyFactory
     {
-        [Inject] private Asteroid.AsteroidPool _pool;
+        [Inject] private AsteroidFacade.AsteroidPool _pool;
         
-        public BaseEnemy Creat(EnemyTrajectorySettings settings)
+        public BaseEnemyFacede Creat(IEnemyTrajectorySettings settings)
         {
             return _pool.Spawn(settings);
         }

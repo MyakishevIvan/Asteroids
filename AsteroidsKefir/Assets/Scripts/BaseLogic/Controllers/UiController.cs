@@ -27,7 +27,10 @@ namespace BaseLogic.Controllers
                     _windowsManager.Close<PromptWindow>();
                     startGameAction();
                 },
-                promptText = "Hold the lef mouse button to shoot bullets\nHold the right mouse button to shoot ray"
+                promptText = "Hold the lef mouse button to shoot bullets" +
+                             "\nHold the right mouse button to shoot ray" +
+                             "\nUse WASD FOR CONTROL SHIP and don't forget." +
+                             "\nRays kill everything but has reload time!"
             });
         }
 
@@ -35,7 +38,7 @@ namespace BaseLogic.Controllers
         {
             var setup = new PromptWindowSetup()
             {
-                promptText = "You died\nScore " + _playerStatsStorage.Score,
+                promptText = "You died\nScore for destroyed big asteroids " + _playerStatsStorage.Score,
                 onOkButtonClick = () =>
                 {
                     _windowsManager.Close<PromptWindow>();

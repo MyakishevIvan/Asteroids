@@ -10,21 +10,24 @@ using Random = UnityEngine.Random;
 
 namespace Asteroids.Enemies
 {
-    public class EnemiesManager : ITickable, IInitializable
+    public class EnemiesManager : ITickable
     {
         [Inject] private AsteroidFactory _asteroidFactory;
         [Inject] private SaucerFactory _saucerFactory;
-        
+        [Inject] private AsteroidParticleFactory _asteroidParticleFactory;
+
+        private const int CASHED_SETTINGS_COUNT = 100;
+        private const int CASHED_ASTEROID_PARTICLE_SETTINGS_COUNT = 30;
         private BalanceStorage _balanceStorage;
         private IEnemyFactory _enemyFactory;
         private SignalBus _signalBus;
-        private BaseEnemy _currentEnemy;
-        private List<BaseEnemy> _spawnedEnemies;
+        private BaseEnemyView _currentEnemyView;
+        private List<BaseEnemyFacede> _spawnedEnemies;
         private EnemyTrajectorySettings[] _cashedTrajectorySettings;
-        private const int CASHED_SETTINGS_COUNT = 100;
+        private AsteroidParticleTrajectorySettings[] _cashedAsteroidParticleTrajectorySettings;
         private Coroutine _enemiesSpawnRoutine;
-
         private int _cashedSettingsIndex;
+        private int _cashedAsteroidParticleSettingsIndex;
 
         private int CashedSettingsIndex
         {
@@ -36,14 +39,14 @@ namespace Asteroids.Enemies
             }
         }
 
-        public void Initialize()
+        private int CashedAsteroidParticleSettingsIndex
         {
-            // CashedSettingsIndex = 0;
-            // _spawnedEnemies = new List<BaseEnemy>();
-            // _signalBus.Subscribe<RemoveEnemyFromActiveList>(RemoveDespawnedEnemyFromList);
-            // var spawnRadius = _balanceStorage.EnemiesConfig.EnemySpawnRadius;
-            // var trajectoryVariance = _balanceStorage.EnemiesConfig.TrajectoryVariance;
-            // CreatCashedEnemiesSettings(spawnRadius, trajectoryVariance);
+            get => _cashedAsteroidParticleSettingsIndex;
+            set
+            {
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                _cashedAsteroidParticleSettingsIndex = value == CASHED_ASTEROID_PARTICLE_SETTINGS_COUNT ? 0 : value;
+            }
         }
 
         public EnemiesManager(SignalBus signalBus, BalanceStorage balanceStorage, AsteroidFactory asteroidFactory)
@@ -52,19 +55,56 @@ namespace Asteroids.Enemies
             _signalBus = signalBus;
             _balanceStorage = balanceStorage;
             CashedSettingsIndex = 0;
-            _spawnedEnemies = new List<BaseEnemy>();
+            _spawnedEnemies = new List<BaseEnemyFacede>();
             _signalBus.Subscribe<RemoveEnemyFromActiveList>(RemoveDespawnedEnemyFromList);
-            var spawnRadius = _balanceStorage.EnemiesConfig.EnemySpawnRadius;
-            var trajectoryVariance = _balanceStorage.EnemiesConfig.TrajectoryVariance;
-            CreatCashedEnemiesSettings(spawnRadius, trajectoryVariance);
+            _signalBus.Subscribe<AsteroidBlowSignal>(SpawnAsteroidParticle);
+            CreatCashedEnemiesSettings();
         }
 
-        private void CreatCashedEnemiesSettings(int spawnRadius, int trajectoryVariance)
+        private void RemoveDespawnedEnemyFromList(RemoveEnemyFromActiveList signal)
         {
+            _spawnedEnemies.Remove(signal.EnemyFacede);
+        }
+
+        private void SpawnAsteroidParticle(AsteroidBlowSignal signal)
+        {
+            var explodedAsteroidPosition = signal.AsroidTransform.position;
+
+            for (var i = 0; i < _balanceStorage.EnemiesConfig.EnemyParticlesCount; i++)
+                CreatAsteroidParticle(explodedAsteroidPosition);
+        }
+
+        private void CreatAsteroidParticle(Vector3 explodedAsteroidPosition)
+        {
+            var settings = _cashedAsteroidParticleTrajectorySettings[CashedAsteroidParticleSettingsIndex++];
+            settings.SetExplodedPosition(explodedAsteroidPosition);
+            var enemy = _asteroidParticleFactory.Creat(settings);
+            _spawnedEnemies.Add(enemy);
+        }
+
+        private void CreatCashedEnemiesSettings()
+        {
+            CreatSettingsForIntegerEnemies();
+            CreatSettingsForParticleEnemies();
+        }
+
+        private void CreatSettingsForIntegerEnemies()
+        {
+            var spawnRadius = _balanceStorage.EnemiesConfig.EnemySpawnRadius;
+            var trajectoryVariance = _balanceStorage.EnemiesConfig.TrajectoryVariance;
             _cashedTrajectorySettings = new EnemyTrajectorySettings[CASHED_SETTINGS_COUNT];
 
             for (var i = 0; i < CASHED_SETTINGS_COUNT; i++)
                 _cashedTrajectorySettings[i] = new EnemyTrajectorySettings(spawnRadius, trajectoryVariance);
+        }
+
+        private void CreatSettingsForParticleEnemies()
+        {
+            _cashedAsteroidParticleTrajectorySettings =
+                new AsteroidParticleTrajectorySettings[CASHED_ASTEROID_PARTICLE_SETTINGS_COUNT];
+
+            for (var i = 0; i < CASHED_ASTEROID_PARTICLE_SETTINGS_COUNT; i++)
+                _cashedAsteroidParticleTrajectorySettings[i] = new AsteroidParticleTrajectorySettings();
         }
 
         public void StartSpawnEnemies()
@@ -93,43 +133,24 @@ namespace Asteroids.Enemies
             }
         }
 
-
         private void CreatEnemy(IEnemyFactory enemyFactory)
         {
-            _currentEnemy = enemyFactory.Creat(_cashedTrajectorySettings[CashedSettingsIndex]);
-            _spawnedEnemies.Add(_currentEnemy);
-            CashedSettingsIndex++;
+            var enemy = enemyFactory.Creat(_cashedTrajectorySettings[CashedSettingsIndex++]);
+            _spawnedEnemies.Add(enemy);
         }
 
         public void StopSpawnAndClearEnemies()
         {
             CoroutinesManager.StopRoutine(_enemiesSpawnRoutine);
-            _spawnedEnemies.Clear();
+            
+            foreach (var enemy in _spawnedEnemies.ToArray())
+                enemy.DespawnEnemy();
         }
 
         public void Tick()
         {
             foreach (var enemy in _spawnedEnemies)
                 enemy.Move();
-        }
-
-        private void RemoveDespawnedEnemyFromList(RemoveEnemyFromActiveList signal) =>
-            _spawnedEnemies.Remove(signal.Enemy);
-
-    }
-
-    public class EnemyTrajectorySettings
-    {
-        public Vector2 SpawnPoint { get; set; }
-        public Quaternion Rotation { get; set; }
-        public Vector2 SpawnDistance { get; set; }
-
-        public EnemyTrajectorySettings(int enemySpawnRadius, int trajectoryVariance)
-        {
-            SpawnDistance = Random.insideUnitCircle.normalized;
-            SpawnPoint = SpawnDistance * enemySpawnRadius;
-            var variance = Random.Range(-trajectoryVariance, trajectoryVariance);
-            Rotation = Quaternion.AngleAxis(variance, Vector3.forward);
         }
     }
 }

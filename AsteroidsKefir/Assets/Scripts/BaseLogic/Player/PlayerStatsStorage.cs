@@ -56,6 +56,10 @@ namespace Asteroids.Player
         
         private void SetBaseStats()
         {
+            speed = 0;
+            angel = 0;
+            Score = 0;
+            coordinates = Vector2.zero;
             RayCount = _balanceStorage.WeaponConfig.RayShootCount;
             RayReloadTime = 0;
         }
@@ -80,16 +84,6 @@ namespace Asteroids.Player
         private void StopCountParams()
         {
             CoroutinesManager.StopRoutine(_paramsCalculationRoutine);
-            ParamsReset();
-        }
-
-        private void ParamsReset()
-        {
-            speed = 0;
-            angel = 0;
-            Score = 0;
-            coordinates = Vector2.zero;
-            RayReloadTime = 0;
         }
         
         public override string ToString()

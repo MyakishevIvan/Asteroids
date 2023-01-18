@@ -1,6 +1,5 @@
 ﻿using Asteroids.Configs;
 using Asteroids.Enemies;
-using Asteroids.Enums;
 using Asteroids.Helper;
 using UnityEngine;
 using Zenject;
@@ -48,8 +47,8 @@ namespace Asteroids.Player.Weapon
             if (col.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
             {
                 _weapon.TakeDamage(()=> CancelInvoke(nameof(DestroyWeapon)));
-                var enemyController = col.gameObject.GetComponent<BaseEnemyController>();
-                enemyController.TakeDamage(_weapon);
+                var enemyController = col.gameObject.GetComponent<BaseEnemyFacede>();
+                enemyController.BulletDamage();
             }
         }
     }

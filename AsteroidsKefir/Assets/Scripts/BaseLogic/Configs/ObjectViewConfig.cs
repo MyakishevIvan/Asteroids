@@ -10,6 +10,7 @@ namespace Asteroids.Configs
     public class ObjectViewConfig : ScriptableObject
     {
         [SerializeField] private PlayerView playerView;
+        [SerializeField] private List<BaseEnemyView> _enemyViews;
         [SerializeField] private GameObject asteroid;
         [SerializeField] private GameObject saucer;
         [SerializeField] private GameObject asteroidParticle;
@@ -17,19 +18,16 @@ namespace Asteroids.Configs
 
         public PlayerView PlayerView => playerView;
         
-        public GameObject GetEnemy<T>() where T : BaseEnemy
+        
+        public GameObject GetEnemy<T>() where T : BaseEnemyView
         {
             if (_enemiesDictionary != null)
                 return _enemiesDictionary[typeof(T)];
 
-            _enemiesDictionary = new Dictionary<Type, GameObject>()
-            {
-                {typeof(Asteroid), asteroid},
-                {typeof(Saucer), saucer},
-                {typeof(AsteroidParticle), asteroidParticle}
-
-            };
+            _enemiesDictionary = new Dictionary<Type, GameObject>();
             
+            foreach (var enemyView in _enemyViews)
+                _enemiesDictionary.Add(enemyView.GetType(), enemyView.gameObject);
 
             return _enemiesDictionary[typeof(T)];
         }

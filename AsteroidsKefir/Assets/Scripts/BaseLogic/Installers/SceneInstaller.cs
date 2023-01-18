@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 using Asteroids.GameProfile;
 using Asteroids.Player.Weapon;
+using EnemiesConfig = Asteroids.Configs.EnemiesConfig;
 
 namespace BaseLogic.Installers
 {
@@ -24,6 +25,8 @@ namespace BaseLogic.Installers
             var playerViewInstance = Container.InstantiatePrefabForComponent<PlayerView>(
                 _balanceStorage.ObjectViewConfig.PlayerView,
                 Vector3.zero, Quaternion.identity, null);
+            Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
+                .WithArguments(horizontalBounds.position, verticalBounds.position);
             Container.BindInterfacesAndSelfTo<AsteroidFactory>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<SaucerFactory>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<AsteroidParticleFactory>().AsSingle().NonLazy();
@@ -34,11 +37,9 @@ namespace BaseLogic.Installers
             Container.BindInterfacesAndSelfTo<PlayerShootSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<BulletShootCreator>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<RayShootCreator>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
-                .WithArguments(horizontalBounds.position, verticalBounds.position);
             Container.Bind<GameProfile>().AsSingle().NonLazy();
-            var playerController = Container.InstantiateComponent<PlayerController>(playerViewInstance.gameObject);
-            Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();
+            var playerController = Container.InstantiateComponent<PlayerFacade>(playerViewInstance.gameObject);
+            Container.Bind<PlayerFacade>().FromInstance(playerController).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerStatsStorage>().AsSingle().WithArguments(playerViewInstance.transform).NonLazy();
             Container.BindInterfacesAndSelfTo<GameStateController>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<EnemiesManager>().AsSingle().NonLazy();
@@ -47,19 +48,19 @@ namespace BaseLogic.Installers
         
         private void InstantiatePools()
         {
-            Container.BindMemoryPool<Asteroid, Asteroid.AsteroidPool>()
+            Container.BindMemoryPool<AsteroidFacade, AsteroidFacade.AsteroidPool>()
                 .WithInitialSize(5)
-                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<Asteroid>())
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<AsteroidView>())
                 .UnderTransformGroup("Enemies");
             
-            Container.BindMemoryPool<Saucer, Saucer.SaucerPool>()
+            Container.BindMemoryPool<SaucerFacade, SaucerFacade.SaucerPool>()
                 .WithInitialSize(5)
-                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<Saucer>())
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<SaucerView>())
                 .UnderTransformGroup("Enemies");
             
-            Container.BindMemoryPool<AsteroidParticle, AsteroidParticle.AsteroidPool>()
+            Container.BindMemoryPool<AsteroidParticleFacade, AsteroidParticleFacade.AsteroidParticlePool>()
                 .WithInitialSize(5)
-                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<AsteroidParticle>())
+                .FromNewComponentOnNewPrefab(_balanceStorage.ObjectViewConfig.GetEnemy<AsteroidParticleView>())
                 .UnderTransformGroup("Enemies");
             
 

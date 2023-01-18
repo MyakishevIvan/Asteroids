@@ -35,10 +35,10 @@ namespace Asteroids.Signals
 
     public class RemoveEnemyFromActiveList
     {
-        public BaseEnemy Enemy { get; }
-        public RemoveEnemyFromActiveList(BaseEnemy enemy)
+        public BaseEnemyFacede EnemyFacede { get; }
+        public RemoveEnemyFromActiveList(BaseEnemyFacede enemyFacede)
         {
-            Enemy = enemy;
+            EnemyFacede = enemyFacede;
         }
     }
 }

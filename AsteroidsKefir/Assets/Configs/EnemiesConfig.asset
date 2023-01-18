@@ -20,5 +20,5 @@ MonoBehaviour:
   saucerFlySpeed: 1
   asteroidFlySpeed: 2
   asteroidParticleFlySpeed: 6
-  lifeTime: 10
+  asteroidLifeTime: 10
   trajectoryVariance: 15
