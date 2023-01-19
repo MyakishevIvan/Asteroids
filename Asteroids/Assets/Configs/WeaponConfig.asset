@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bab95d1fdb54398a38190a6ce61ccc8, type: 3}
   m_Name: WeaponConfig
   m_EditorClassIdentifier: 
-  BulletObject: {fileID: 2144122419195808164, guid: 9a32f2edcea821541b16ccfafcd3bd7a, type: 3}
-  RayObject: {fileID: 3726123302185271375, guid: d02f11b3ca55dc648a20f19301af97af, type: 3}
   _rayShootCount: 3
   _reloadTime: 10
-  _shootSpeed: 10
-  _shootDelay: 0
+  _bulletShootSpeed: 10
+  _rayShootSpeed: 20
+  _shootDelay: 1

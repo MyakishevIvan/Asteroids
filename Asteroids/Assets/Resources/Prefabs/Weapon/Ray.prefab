@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5055265670518107670}
   - component: {fileID: 5136647946897955502}
   - component: {fileID: 5333300767669711426}
+  - component: {fileID: 1081346574193964189}
   m_Layer: 0
   m_Name: Ray
   m_TagString: Untagged
@@ -120,3 +121,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.05, y: 0.5}
   m_EdgeRadius: 0
+--- !u!114 &1081346574193964189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3726123302185271375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 798da91c9ecf4badb12ebb21ea0521aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

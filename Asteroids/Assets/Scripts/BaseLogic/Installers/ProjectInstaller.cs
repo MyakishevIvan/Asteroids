@@ -1,8 +1,6 @@
 using Asteroids.Configs;
-using Asteroids.Enemies;
 using Asteroids.Windows;
 using Asteroids.Signals;
-using BaseLogic.Controllers;
 using UnityEngine;
 using Zenject;
 
@@ -29,6 +27,7 @@ namespace BaseLogic.Installers
             Container.DeclareSignal<RayEndedSignal>();
             Container.DeclareSignal<RayReloadTimeEned>();
             Container.DeclareSignal<RemoveEnemyFromActiveList>();
+            Container.DeclareSignal<RemoveWeaponFromActiveList>();
         }
 
         private void BindSystems()

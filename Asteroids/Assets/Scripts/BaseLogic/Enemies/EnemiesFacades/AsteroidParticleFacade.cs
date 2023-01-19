@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class AsteroidParticleFacade : BaseEnemyFacede, ITemporaryEnemy
+    public class AsteroidParticleFacade : BaseEnemyFacade, ITemporaryEnemy
     {
         [Inject] private SignalBus _signalBus;
         [Inject] private AsteroidParticlePool _pool;
@@ -25,7 +25,7 @@ namespace Asteroids.Enemies
             _speed = _balanceStorage.EnemiesConfig.AsteroidFlySpeed;
         }
         
-        public override void SetTrajectorySettings(IEnemyTrajectorySettings settings)
+        public override void SetTrajectorySettings(ITrajectorySettings settings)
         {
             _settings = (AsteroidParticleTrajectorySettings)settings;
             transform.position = _settings.SpawnPoint;
@@ -68,7 +68,7 @@ namespace Asteroids.Enemies
         
         public void StopDespawnAfterLifeTimeRoutine() => CoroutinesManager.StopRoutine(DespawnRoutine);
         
-        public class AsteroidParticlePool : MemoryPool<IEnemyTrajectorySettings, AsteroidParticleFacade>
+        public class AsteroidParticlePool : MemoryPool<ITrajectorySettings, AsteroidParticleFacade>
         {
             [Inject] private DiContainer _diContainer;
             [Inject] private SignalBus _signalBus;
@@ -90,7 +90,7 @@ namespace Asteroids.Enemies
                 facade.gameObject.SetActive(false);
             }
 
-            protected override void Reinitialize(IEnemyTrajectorySettings settings, AsteroidParticleFacade facade)
+            protected override void Reinitialize(ITrajectorySettings settings, AsteroidParticleFacade facade)
             {
                 facade.SetTrajectorySettings(settings);
                 facade.StartDespawnAfterLifeTimeRoutine();

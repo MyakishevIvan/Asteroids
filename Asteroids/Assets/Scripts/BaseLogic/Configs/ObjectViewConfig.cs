@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Asteroids.Enemies;
-using Asteroids.Player;
+using Asteroids.Enums;
+using Player.Stats;
+using Player.ShootSystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Asteroids.Configs
 {
@@ -10,26 +13,38 @@ namespace Asteroids.Configs
     public class ObjectViewConfig : ScriptableObject
     {
         [SerializeField] private PlayerView playerView;
-        [SerializeField] private List<BaseEnemyView> _enemyViews;
-        [SerializeField] private GameObject asteroid;
-        [SerializeField] private GameObject saucer;
-        [SerializeField] private GameObject asteroidParticle;
-        private Dictionary<Type, GameObject> _enemiesDictionary;
+        [SerializeField] private List<BaseEnemyView> _enemiesViews;
+        [SerializeField] private List<BaseWeaponView> _weaponsViews;
 
+        private Dictionary<Type, GameObject> _enemiesViewsDictionary;
+        private Dictionary<Type, GameObject> _weaponsViewsDictionary;
+        
         public PlayerView PlayerView => playerView;
         
-        
-        public GameObject GetEnemy<T>() where T : BaseEnemyView
+        public GameObject GetEnemyView<T>() where T : BaseEnemyView
         {
-            if (_enemiesDictionary != null)
-                return _enemiesDictionary[typeof(T)];
+            if (_enemiesViewsDictionary != null)
+                return _enemiesViewsDictionary[typeof(T)];
 
-            _enemiesDictionary = new Dictionary<Type, GameObject>();
-            
-            foreach (var enemyView in _enemyViews)
-                _enemiesDictionary.Add(enemyView.GetType(), enemyView.gameObject);
+            _enemiesViewsDictionary = new Dictionary<Type, GameObject>();
 
-            return _enemiesDictionary[typeof(T)];
+            foreach (var enemyView in _enemiesViews)
+                _enemiesViewsDictionary.Add(enemyView.GetType(), enemyView.gameObject);
+
+            return _enemiesViewsDictionary[typeof(T)];
+        }
+        
+        public GameObject GetWeaponView<T>() where T : BaseWeaponView
+        {
+            if (_weaponsViewsDictionary != null)
+                return _weaponsViewsDictionary[typeof(T)];
+
+            _weaponsViewsDictionary = new Dictionary<Type, GameObject>();
+
+            foreach (var enemyView in _weaponsViews)
+                _weaponsViewsDictionary.Add(enemyView.GetType(), enemyView.gameObject);
+
+            return _weaponsViewsDictionary[typeof(T)];
         }
     }
 }

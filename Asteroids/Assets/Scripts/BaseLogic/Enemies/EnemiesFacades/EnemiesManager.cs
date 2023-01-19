@@ -22,8 +22,8 @@ namespace Asteroids.Enemies
         private IEnemyFactory _enemyFactory;
         private SignalBus _signalBus;
         private BaseEnemyView _currentEnemyView;
-        private List<BaseEnemyFacede> _spawnedEnemies;
-        private EnemyTrajectorySettings[] _cashedTrajectorySettings;
+        private List<BaseEnemyFacade> _spawnedEnemies;
+        private TrajectorySettings[] _cashedTrajectorySettings;
         private AsteroidParticleTrajectorySettings[] _cashedAsteroidParticleTrajectorySettings;
         private Coroutine _enemiesSpawnRoutine;
         private int _cashedSettingsIndex;
@@ -55,7 +55,7 @@ namespace Asteroids.Enemies
             _signalBus = signalBus;
             _balanceStorage = balanceStorage;
             CashedSettingsIndex = 0;
-            _spawnedEnemies = new List<BaseEnemyFacede>();
+            _spawnedEnemies = new List<BaseEnemyFacade>();
             _signalBus.Subscribe<RemoveEnemyFromActiveList>(RemoveDespawnedEnemyFromList);
             _signalBus.Subscribe<AsteroidBlowSignal>(SpawnAsteroidParticle);
             CreatCashedEnemiesSettings();
@@ -63,7 +63,7 @@ namespace Asteroids.Enemies
 
         private void RemoveDespawnedEnemyFromList(RemoveEnemyFromActiveList signal)
         {
-            _spawnedEnemies.Remove(signal.EnemyFacede);
+            _spawnedEnemies.Remove(signal.EnemyFacade);
         }
 
         private void SpawnAsteroidParticle(AsteroidBlowSignal signal)
@@ -92,10 +92,10 @@ namespace Asteroids.Enemies
         {
             var spawnRadius = _balanceStorage.EnemiesConfig.EnemySpawnRadius;
             var trajectoryVariance = _balanceStorage.EnemiesConfig.TrajectoryVariance;
-            _cashedTrajectorySettings = new EnemyTrajectorySettings[CASHED_SETTINGS_COUNT];
+            _cashedTrajectorySettings = new TrajectorySettings[CASHED_SETTINGS_COUNT];
 
             for (var i = 0; i < CASHED_SETTINGS_COUNT; i++)
-                _cashedTrajectorySettings[i] = new EnemyTrajectorySettings(spawnRadius, trajectoryVariance);
+                _cashedTrajectorySettings[i] = new TrajectorySettings(spawnRadius, trajectoryVariance);
         }
 
         private void CreatSettingsForParticleEnemies()

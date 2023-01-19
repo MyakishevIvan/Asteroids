@@ -1,4 +1,5 @@
 using Asteroids.Enemies;
+using Player.ShootSystem;
 using UnityEngine;
 
 namespace Asteroids.Signals
@@ -35,10 +36,19 @@ namespace Asteroids.Signals
 
     public class RemoveEnemyFromActiveList
     {
-        public BaseEnemyFacede EnemyFacede { get; }
-        public RemoveEnemyFromActiveList(BaseEnemyFacede enemyFacede)
+        public BaseEnemyFacade EnemyFacade { get; }
+        public RemoveEnemyFromActiveList(BaseEnemyFacade enemyFacade)
         {
-            EnemyFacede = enemyFacede;
+            EnemyFacade = enemyFacade;
+        }
+    }
+    
+    public class RemoveWeaponFromActiveList
+    {
+        public BaseWeaponFacade WeaponFacade { get; }
+        public RemoveWeaponFromActiveList(BaseWeaponFacade weaponFacade)
+        {
+            WeaponFacade = weaponFacade;
         }
     }
 }

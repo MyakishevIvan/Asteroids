@@ -1,9 +1,10 @@
 using Asteroids.Enemies;
 using Asteroids.GameProfile;
 using Asteroids.Helper;
-using Asteroids.Player;
-using Asteroids.Player.ShootSystem;
+using Player.Stats;
+using Player.ShootSystem;
 using Asteroids.Signals;
+using Player.Controller;
 using UnityEngine;
 using Zenject;
 
@@ -14,8 +15,8 @@ namespace BaseLogic.Controllers
         [Inject] private UiController _uiController;
         [Inject] private GameProfile _gameProfile;
         [Inject] private SignalBus _signalBus;
-        [Inject] private PlayerFacade _playerFacade;
-        [Inject] private PlayerShootSystem _playerShootSystem;
+        [Inject] private PlayerController _playerController;
+        [Inject] private ShootingManager _shootingManager;
         [Inject] private EnemiesManager _enemiesManager;
 
         public void Initialize()
@@ -35,8 +36,8 @@ namespace BaseLogic.Controllers
         {
             _signalBus.Fire(new StartGameSignal());
             _enemiesManager.StartSpawnEnemies();
-            _playerFacade.EnablePlayerView();
-            _playerShootSystem.SubscribeShootEvents();
+            _playerController.EnablePlayerView();
+            _shootingManager.SubscribeShootEvents();
         }
 
         private void EndGame()
@@ -44,8 +45,9 @@ namespace BaseLogic.Controllers
             CoroutinesManager.StopAllRoutines();
             _enemiesManager.StopSpawnAndClearEnemies();
             _uiController.OpenLoseGamePrompt(StartGame);
-            _playerShootSystem.UnSubscribeShootEvents();
-            _playerFacade.DisablePlayer();
+            _shootingManager.UnSubscribeShootEvents();
+            _shootingManager.DespawnAllShotWeapon();
+            _playerController.DisablePlayer();
         }
 
         public void Tick()

@@ -1,19 +1,15 @@
-using System;
 using Asteroids.Configs;
-using Asteroids.Player;
-using Asteroids.Player.Weapon;
-using Asteroids.Signals;
+using Player.Stats;
 using UnityEngine;
 using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class SaucerFacade : BaseEnemyFacede
+    public class SaucerFacade : BaseEnemyFacade
     {
         [Inject] private PlayerView _playerView;
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private SaucerPool _pool;
-        [Inject] private SignalBus _signalBus;
         
         private float _speed;
 
@@ -23,7 +19,7 @@ namespace Asteroids.Enemies
             _speed = _balanceStorage.EnemiesConfig.SaucerFlySpeed;
         }
 
-        public override void SetTrajectorySettings(IEnemyTrajectorySettings settings)
+        public override void SetTrajectorySettings(ITrajectorySettings settings)
         {
             transform.position = settings.SpawnPoint;
         }
@@ -52,27 +48,24 @@ namespace Asteroids.Enemies
                     Vector3.MoveTowards(transform.position, _playerView.transform.position, _speed * Time.deltaTime);
         }
         
-        public class SaucerPool : MemoryPool<IEnemyTrajectorySettings, SaucerFacade>
+        public class SaucerPool : MemoryPool<ITrajectorySettings, SaucerFacade>
         {
-            [Inject] private DiContainer _diContainer;
-            [Inject] private SignalBus _signalBus;
             protected override void OnCreated(SaucerFacade facade)
             {
-                facade.gameObject.SetActive(false);
+                facade.OnCreated();
             }
             
             protected override void OnSpawned(SaucerFacade facade)
             {
-                facade.gameObject.SetActive(true);
+                facade.OnSpawned();
             }
 
             protected override void OnDespawned(SaucerFacade facade)
             {
-                _signalBus.Fire(new RemoveEnemyFromActiveList(facade));
-                facade.gameObject.SetActive(false);
+                facade.OnDespawned();
             }
             
-            protected override void Reinitialize(IEnemyTrajectorySettings settings, SaucerFacade facade)
+            protected override void Reinitialize(ITrajectorySettings settings, SaucerFacade facade)
             {
                 facade.SetTrajectorySettings(settings);
             }

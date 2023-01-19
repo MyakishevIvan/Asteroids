@@ -6,7 +6,7 @@ namespace Asteroids.Enemies
     {
         [Inject] private AsteroidFacade.AsteroidPool _pool;
         
-        public BaseEnemyFacede Creat(IEnemyTrajectorySettings settings)
+        public BaseEnemyFacade Creat(ITrajectorySettings settings)
         {
             return _pool.Spawn(settings);
         }

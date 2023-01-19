@@ -7,13 +7,13 @@ using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class AsteroidFacade : BaseEnemyFacede, ITemporaryEnemy
+    public class AsteroidFacade : BaseEnemyFacade, ITemporaryEnemy
     {
         [Inject] private SignalBus _signalBus;
         [Inject] private AsteroidPool _pool;
         [Inject] private BalanceStorage _balanceStorage;
         
-        private EnemyTrajectorySettings _settings;
+        private TrajectorySettings _settings;
         private Vector2 _currentDirection;
         private float _speed;
         
@@ -25,9 +25,9 @@ namespace Asteroids.Enemies
             _speed = _balanceStorage.EnemiesConfig.AsteroidFlySpeed;
         }
 
-        public override void SetTrajectorySettings(IEnemyTrajectorySettings settings)
+        public override void SetTrajectorySettings(ITrajectorySettings settings)
         {
-            _settings = (EnemyTrajectorySettings)settings;
+            _settings = (TrajectorySettings)settings;
             transform.position = _settings.SpawnPoint;
         }
 
@@ -67,9 +67,8 @@ namespace Asteroids.Enemies
         public override void DespawnEnemy() => _pool.Despawn(this);
         
         public void StopDespawnAfterLifeTimeRoutine() => CoroutinesManager.StopRoutine(DespawnRoutine);
-
         
-        public class AsteroidPool : MemoryPool<IEnemyTrajectorySettings, AsteroidFacade>
+        public class AsteroidPool : MemoryPool<ITrajectorySettings, AsteroidFacade>
         {
             [Inject] private SignalBus _signalBus;
 
@@ -96,7 +95,7 @@ namespace Asteroids.Enemies
             // Called immediately after the item is removed from the pool
             // This method will also contain any parameters that are passed along
             // to the memory pool from the spawning code
-            protected override void Reinitialize(IEnemyTrajectorySettings settings, AsteroidFacade enemy)
+            protected override void Reinitialize(ITrajectorySettings settings, AsteroidFacade enemy)
             {
                 enemy.SetTrajectorySettings(settings);
                 enemy.StartDespawnAfterLifeTimeRoutine();

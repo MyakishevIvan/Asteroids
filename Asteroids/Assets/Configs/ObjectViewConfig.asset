@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: ObjectViewConfig
   m_EditorClassIdentifier: 
   playerView: {fileID: 8729185653367442458, guid: 9c2d294a777c50940b3ebfeea9c91cbe, type: 3}
-  _enemyViews:
+  _enemiesViews:
+  - {fileID: 2390661380399026042, guid: b44b42acbfab187498bdbac5b01d6b4a, type: 3}
   - {fileID: -1953164990160383642, guid: d1da55429ec7b184f8adb3737f1721c4, type: 3}
   - {fileID: -1983535120474709594, guid: 07bd9dddcfc19614bb6041fa4c462be2, type: 3}
-  - {fileID: 2390661380399026042, guid: b44b42acbfab187498bdbac5b01d6b4a, type: 3}
-  asteroid: {fileID: 1575447505383635343, guid: d1da55429ec7b184f8adb3737f1721c4, type: 3}
-  saucer: {fileID: 5582768925898126755, guid: 07bd9dddcfc19614bb6041fa4c462be2, type: 3}
-  asteroidParticle: {fileID: 6766039807732324552, guid: b44b42acbfab187498bdbac5b01d6b4a, type: 3}
+  _weaponsViews:
+  - {fileID: 382368978088174990, guid: 9a32f2edcea821541b16ccfafcd3bd7a, type: 3}
+  - {fileID: 1081346574193964189, guid: d02f11b3ca55dc648a20f19301af97af, type: 3}
