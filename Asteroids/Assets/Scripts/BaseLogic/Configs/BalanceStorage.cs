@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Asteroids.Configs
 {
-    [CreateAssetMenu(fileName = "BalanceStorage", menuName = "Configs/BalanceStorage")]
+    [CreateAssetMenu(fileName = nameof(BalanceStorage), menuName = "Configs/" + nameof(BalanceStorage))]
     
     public class BalanceStorage : ScriptableObject, IInitializable
     {
@@ -15,16 +15,12 @@ namespace Asteroids.Configs
         [SerializeField] private PlayerConfig playerConfig;
         [SerializeField] private TextConfig textConfig;
 
-        private void Awake()
-        {
-            Debug.LogError("awake");
-        }
-
         public  ObjectViewConfig ObjectViewConfig => objectViewConfig;
         public  WeaponConfig WeaponConfig => weaponConfig;
         public EnemiesConfig EnemiesConfig => enemiesConfig;
         public PlayerConfig PlayerConfig => playerConfig;
         public TextConfig TextConfig => textConfig;
+        
         public void Initialize()
         {
             textConfig.OnCreat();

@@ -10,7 +10,6 @@ namespace Player.ShootSystem
     public class RayShootHandler : BaseShootHandler
     {
         [Inject] private PlayerStatsManager _playerStatsManager;
-        [Inject] private SignalBus _signalBus;
         [Inject] private RayController.RayPool _pool;
         private Coroutine _reloadRoutine;
         

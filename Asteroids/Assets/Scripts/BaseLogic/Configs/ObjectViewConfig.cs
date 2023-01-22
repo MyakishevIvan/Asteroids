@@ -7,7 +7,7 @@ using Weapons.View;
 
 namespace Asteroids.Configs
 {
-    [CreateAssetMenu(fileName = "ObjectConfig", menuName = "Configs/ObjectConfig")]
+    [CreateAssetMenu(fileName = nameof(ObjectViewConfig), menuName = "Configs/" +nameof(ObjectViewConfig))]
     public class ObjectViewConfig : ScriptableObject
     {
         [SerializeField] private PlayerView playerView;
