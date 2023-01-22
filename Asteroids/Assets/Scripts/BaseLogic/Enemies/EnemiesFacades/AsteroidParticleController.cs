@@ -1,15 +1,13 @@
 using System.Collections;
 using Asteroids.Configs;
 using Asteroids.Helper;
-using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class AsteroidParticleFacade : BaseEnemyFacade, ITemporaryEnemy
+    public class AsteroidParticleController : BaseEnemyController, ITemporaryEnemy
     {
-        [Inject] private SignalBus _signalBus;
         [Inject] private AsteroidParticlePool _pool;
         [Inject] private BalanceStorage _balanceStorage;
         
@@ -22,7 +20,7 @@ namespace Asteroids.Enemies
         private new void Awake()
         {
             base.Awake();
-            _speed = _balanceStorage.EnemiesConfig.AsteroidFlySpeed;
+            _speed = _balanceStorage.EnemiesConfig.AsteroidParticleFlySpeed;
         }
         
         public override void SetTrajectorySettings(ITrajectorySettings settings)
@@ -51,7 +49,6 @@ namespace Asteroids.Enemies
         protected override void HitEnemy()
         {
             _pool.Despawn(this);
-            CoroutinesManager.StopRoutine(DespawnRoutine);
         }
 
         public IEnumerator DespawnCoroutine()
@@ -62,38 +59,41 @@ namespace Asteroids.Enemies
 
         public override void DespawnEnemy() => _pool.Despawn(this);
 
-        
-        public void StartDespawnAfterLifeTimeRoutine() =>
-            DespawnRoutine = CoroutinesManager.StartRoutine(DespawnCoroutine());
+        protected override void OnDespawned()
+        {
+            StopDespawnAfterLifeTimeRoutine();
+            base.OnDespawned();
+        }
         
         public void StopDespawnAfterLifeTimeRoutine() => CoroutinesManager.StopRoutine(DespawnRoutine);
         
-        public class AsteroidParticlePool : MemoryPool<ITrajectorySettings, AsteroidParticleFacade>
+        public void StartDespawnAfterEndLifeTimeRoutine() =>
+            DespawnRoutine = CoroutinesManager.StartRoutine(DespawnCoroutine());
+        
+        public class AsteroidParticlePool : MemoryPool<ITrajectorySettings, AsteroidParticleController>
         {
-            [Inject] private DiContainer _diContainer;
             [Inject] private SignalBus _signalBus;
-            private AsteroidParticleFacade _asteroidParticleFacade;
+            private AsteroidParticleController _asteroidParticleController;
 
-            protected override void OnCreated(AsteroidParticleFacade facade)
+            protected override void OnCreated(AsteroidParticleController controller)
             {
-                facade.gameObject.SetActive(false);
+                controller.OnCreated();
             }
 
-            protected override void OnSpawned(AsteroidParticleFacade facade)
+            protected override void OnSpawned(AsteroidParticleController controller)
             {
-                facade.gameObject.SetActive(true);
+                controller.OnSpawned();
             }
 
-            protected override void OnDespawned(AsteroidParticleFacade facade)
+            protected override void OnDespawned(AsteroidParticleController controller)
             {
-                _signalBus.Fire(new RemoveEnemyFromActiveList(facade));
-                facade.gameObject.SetActive(false);
+               controller.OnDespawned();
             }
 
-            protected override void Reinitialize(ITrajectorySettings settings, AsteroidParticleFacade facade)
+            protected override void Reinitialize(ITrajectorySettings settings, AsteroidParticleController controller)
             {
-                facade.SetTrajectorySettings(settings);
-                facade.StartDespawnAfterLifeTimeRoutine();
+                controller.SetTrajectorySettings(settings);
+                controller.StartDespawnAfterEndLifeTimeRoutine();
             }
         }
     }

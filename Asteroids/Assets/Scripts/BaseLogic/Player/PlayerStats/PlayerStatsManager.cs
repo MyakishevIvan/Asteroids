@@ -26,12 +26,12 @@ namespace Player.Stats
 
         public void Initialize()
         {
-            _signalBus.Subscribe<AsteroidBlowSignal>(IncreaseScore);
+            _signalBus.Subscribe<InсreaceScoreSignal>(IncreaseScore);
             _signalBus.Subscribe<StartGameSignal>(StartCountParams);
             _signalBus.Subscribe<EndGameSignal>(StopCountParams);
         }
 
-        private void IncreaseScore(AsteroidBlowSignal signal) => _playerStatsStorage.Score++;
+        private void IncreaseScore(InсreaceScoreSignal signal) => _playerStatsStorage.Score++;
 
         private void StartCountParams(StartGameSignal signal)
         {
@@ -40,8 +40,12 @@ namespace Player.Stats
         }
 
         private void SetBaseStats() => _playerStatsStorage.ResetStats();
-        private void StopCountParams() => CoroutinesManager.StopRoutine(_paramsCalculationRoutine);
 
+        private void StopCountParams()
+        {
+            if (_paramsCalculationRoutine != null) CoroutinesManager.StopRoutine(_paramsCalculationRoutine);
+            if (_reloadRoutine != null) CoroutinesManager.StopRoutine(_reloadRoutine);
+        }
 
         private IEnumerator ParamsCalculation()
         {
@@ -63,16 +67,16 @@ namespace Player.Stats
         public bool TrySpendRays()
         {
             var isReloadTimeIsEnded = _playerStatsStorage.RayReloadTime == 0;
-            
+
             if (isReloadTimeIsEnded)
             {
                 _playerStatsStorage.RayCount--;
                 CheckRaysCountAfterSpending();
             }
-            
+
             return isReloadTimeIsEnded;
         }
-        
+
         private void CheckRaysCountAfterSpending()
         {
             if (IsRaysEnded())

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Player.Stats
+namespace Player.View
 {
     public class PlayerView : MonoBehaviour
     {

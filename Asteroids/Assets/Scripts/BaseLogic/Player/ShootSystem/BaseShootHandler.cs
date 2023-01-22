@@ -1,5 +1,4 @@
-using Asteroids.Enemies;
-using Player.Stats;
+using Player.View;
 using Zenject;
 
 namespace Player.ShootSystem
@@ -14,6 +13,6 @@ namespace Player.ShootSystem
             _trajectorySettings = new WeaponTrajectorySettings();
         }
         
-        public abstract bool TryShoot(out BaseWeaponFacade weaponFacade);
+        public abstract bool TryShoot(out BaseWeaponController weaponController);
     }
 }

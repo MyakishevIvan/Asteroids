@@ -1,4 +1,4 @@
-namespace BaseLogic.Installers
+namespace Asteroids.Enemies
 {
     public interface IObjectPoolable
     {

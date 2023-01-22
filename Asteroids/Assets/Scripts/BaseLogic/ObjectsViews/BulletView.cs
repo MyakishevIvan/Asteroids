@@ -1,9 +1,6 @@
-using Player.ShootSystem;
-
-namespace BaseLogic.ObjectView
+namespace Weapons.View
 {
     public class BulletView : BaseWeaponView
     {
-        
     }
 }

@@ -1,6 +1,4 @@
-using Player.ShootSystem;
-
-namespace BaseLogic.ObjectView
+namespace Weapons.View
 {
     public class RayView : BaseWeaponView
     {

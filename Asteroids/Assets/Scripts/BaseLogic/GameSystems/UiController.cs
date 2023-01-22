@@ -1,12 +1,14 @@
 using System;
+using Asteroids.Configs;
 using Player.Stats;
 using Asteroids.Windows;
 using Zenject;
 
-namespace BaseLogic.Controllers
+namespace Game.Controllers
 {
     public class UiController
     {
+        [Inject] private BalanceStorage _balanceStorage;
         [Inject] private WindowsManager _windowsManager;
         [Inject] private PlayerStatsManager _playerStatsManager;
         
@@ -20,29 +22,25 @@ namespace BaseLogic.Controllers
         
         public void OpenFirstGamePrompt(Action startGameAction)
         {
-            _windowsManager.Open<PromptWindow, PromptWindowSetup>(new PromptWindowSetup()
-            {
-                onOkButtonClick = () =>
-                {
-                    _windowsManager.Close<PromptWindow>();
-                    startGameAction();
-                },
-                promptText = "Hold the lef mouse button to shoot bullets" +
-                             "\nHold the right mouse button to shoot ray" +
-                             "\nUse WASD FOR CONTROL SHIP and don't forget." +
-                             "\nRays kill everything but has reload time!"
-            });
+            var text = _balanceStorage.TextConfig.StartGameText;
+            OpenPopUp(text, startGameAction);
         }
 
         public void OpenLoseGamePrompt(Action endGameAction)
         {
+            var text = _balanceStorage.TextConfig.EndGameText + _playerStatsManager.Score;
+            OpenPopUp(text, endGameAction);
+        }
+
+        private void OpenPopUp(string text, Action onButtonClickActoin)
+        {
             var setup = new PromptWindowSetup()
             {
-                promptText = "You died\nScore for destroyed big asteroids " + _playerStatsManager.Score,
+                promptText = text,
                 onOkButtonClick = () =>
                 {
                     _windowsManager.Close<PromptWindow>();
-                    endGameAction();
+                    onButtonClickActoin();
                 }
             };
 

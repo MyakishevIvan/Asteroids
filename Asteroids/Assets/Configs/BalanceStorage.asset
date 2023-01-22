@@ -16,3 +16,4 @@ MonoBehaviour:
   weaponConfig: {fileID: 11400000, guid: f18a2387d07e4e349884bfff3c6c787a, type: 2}
   enemiesConfig: {fileID: 11400000, guid: 540eca82d2d11cb4ebfc9790cf9d9856, type: 2}
   playerConfig: {fileID: 11400000, guid: 4ee5cbbf876f24e4bbb6c5683fdb6a8d, type: 2}
+  textConfig: {fileID: 11400000, guid: 28546eb77dcf6f14bbd4de40efca6868, type: 2}

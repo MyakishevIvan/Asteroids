@@ -9,8 +9,15 @@ namespace Player.Stats
     public class PlayerStartsStorage : IInitializable
     {
         [Inject] private BalanceStorage _balanceStorage;
+        private int _score;
+        private int _rayReloadTime;
+        private int _rayCount;
+        private float _speed;
+        private StringBuilder _stringBuilder;
+        
         public float Angel { get; set; }
         public Vector2 Coordinates { get; set; }
+        
         public int RayCount
         {
             get => _rayCount;
@@ -51,12 +58,6 @@ namespace Player.Stats
                 _score = value;
             }
         }
-
-        private int _score;
-        private int _rayReloadTime;
-        private int _rayCount;
-        private float _speed;
-        private StringBuilder _stringBuilder;
         
         public void Initialize()
         {

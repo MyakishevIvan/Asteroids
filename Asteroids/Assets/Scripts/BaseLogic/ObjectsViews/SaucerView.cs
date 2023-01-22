@@ -1,7 +1,4 @@
-using Asteroids.Signals;
-using Zenject;
-
-namespace Asteroids.Enemies
+namespace Enemies.View
 {
     public class SaucerView : BaseEnemyView
     {

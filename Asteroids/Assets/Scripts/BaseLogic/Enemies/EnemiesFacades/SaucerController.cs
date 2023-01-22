@@ -1,11 +1,12 @@
 using Asteroids.Configs;
 using Player.Stats;
+using Player.View;
 using UnityEngine;
 using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class SaucerFacade : BaseEnemyFacade
+    public class SaucerController : BaseEnemyController
     {
         [Inject] private PlayerView _playerView;
         [Inject] private BalanceStorage _balanceStorage;
@@ -48,26 +49,26 @@ namespace Asteroids.Enemies
                     Vector3.MoveTowards(transform.position, _playerView.transform.position, _speed * Time.deltaTime);
         }
         
-        public class SaucerPool : MemoryPool<ITrajectorySettings, SaucerFacade>
+        public class SaucerPool : MemoryPool<ITrajectorySettings, SaucerController>
         {
-            protected override void OnCreated(SaucerFacade facade)
+            protected override void OnCreated(SaucerController controller)
             {
-                facade.OnCreated();
+                controller.OnCreated();
             }
             
-            protected override void OnSpawned(SaucerFacade facade)
+            protected override void OnSpawned(SaucerController controller)
             {
-                facade.OnSpawned();
+                controller.OnSpawned();
             }
 
-            protected override void OnDespawned(SaucerFacade facade)
+            protected override void OnDespawned(SaucerController controller)
             {
-                facade.OnDespawned();
+                controller.OnDespawned();
             }
             
-            protected override void Reinitialize(ITrajectorySettings settings, SaucerFacade facade)
+            protected override void Reinitialize(ITrajectorySettings settings, SaucerController controller)
             {
-                facade.SetTrajectorySettings(settings);
+                controller.SetTrajectorySettings(settings);
             }
         }
     }

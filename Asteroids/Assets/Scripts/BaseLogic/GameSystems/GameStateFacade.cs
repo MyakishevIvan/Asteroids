@@ -1,16 +1,14 @@
 using Asteroids.Enemies;
 using Asteroids.GameProfile;
-using Asteroids.Helper;
-using Player.Stats;
 using Player.ShootSystem;
 using Asteroids.Signals;
 using Player.Controller;
 using UnityEngine;
 using Zenject;
 
-namespace BaseLogic.Controllers
+namespace Game.Controllers
 {
-    public class GameStateController : IInitializable, ITickable
+    public class GameStateFacade : IInitializable, ITickable
     {
         [Inject] private UiController _uiController;
         [Inject] private GameProfile _gameProfile;
@@ -42,20 +40,17 @@ namespace BaseLogic.Controllers
 
         private void EndGame()
         {
-            CoroutinesManager.StopAllRoutines();
-            _enemiesManager.StopSpawnAndClearEnemies();
+            _enemiesManager.StopSpawnAndDespawnEnemies();
             _uiController.OpenLoseGamePrompt(StartGame);
             _shootingManager.UnSubscribeShootEvents();
             _shootingManager.DespawnAllShotWeapon();
             _playerController.DisablePlayer();
         }
-
+        
         public void Tick()
         {
             if (Input.GetKeyDown(KeyCode.F))
-            {
                 _gameProfile.RemoveSave();
-            }
         }
     }
 }

@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using Asteroids.Signals;
+using Enemies.View;
 using UnityEngine;
 using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public abstract class BaseEnemyFacade : MonoBehaviour
+    public abstract class BaseEnemyController : MonoBehaviour
     {
-        [Inject] private SignalBus _signalBus;
+        [Inject] protected SignalBus _signalBus;
         protected BaseEnemyView EnemyView;
 
         protected void Awake()
@@ -16,18 +17,18 @@ namespace Asteroids.Enemies
             EnemyView = GetComponent<BaseEnemyView>();
         }
 
-        public void OnSpawned()
+        protected void OnSpawned()
         {
             gameObject.SetActive(true);
         }
 
-        public void OnDespawned()
+        protected virtual void OnDespawned()
         {
-            _signalBus.Fire(new RemoveEnemyFromActiveList(this));
+            _signalBus.Fire(new RemoveEnemyFromActiveListSignal(this));
             gameObject.SetActive(false);
         }
 
-        public void OnCreated()
+        protected void OnCreated()
         {
             gameObject.SetActive(false);
         }

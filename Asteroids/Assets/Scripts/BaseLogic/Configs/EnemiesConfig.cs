@@ -15,6 +15,8 @@ namespace Asteroids.Configs
         [SerializeField] private int asteroidParticleFlySpeed;
         [SerializeField] private int asteroidLifeTime;
         [SerializeField] private int trajectoryVariance;
+        [SerializeField] private int cashedEnemiesSettingsCount;
+        [SerializeField] private int cashedAsteroidParticleSettingsCount;
 
         public float SaucerSpawnChance => saucerSpawnChance;
         public int EnemySpawnDelay => enemySpawnDelay;
@@ -26,5 +28,7 @@ namespace Asteroids.Configs
         public int AsteroidParticleFlySpeed => asteroidParticleFlySpeed;
         public int AsteroidLifeTime => asteroidLifeTime;
         public int TrajectoryVariance => trajectoryVariance;
+        public int CashedEnemiesSettingsCount => cashedEnemiesSettingsCount;
+        public int CashedAsteroidParticleSettingsCount => cashedAsteroidParticleSettingsCount;
     }
 }

@@ -16,7 +16,7 @@ namespace Player.ShootSystem
         [Inject] private BulletShootHandler _bulletShootHandler;
         [Inject] private SignalBus _signalBus;
         
-        private List<BaseWeaponFacade> _shotWeapons;
+        private List<BaseWeaponController> _shotWeapons;
         private float _previousTime;
         private float _currentTime;
 
@@ -36,12 +36,12 @@ namespace Player.ShootSystem
 
         public void Initialize()
         {
-            _shotWeapons = new List<BaseWeaponFacade>();
-            _signalBus.Subscribe<RemoveWeaponFromActiveList>(RemoveWeaponFromActiveList);
+            _shotWeapons = new List<BaseWeaponController>();
+            _signalBus.Subscribe<RemoveWeaponFromActiveListSignal>(RemoveWeaponFromActiveList);
         }
 
-        private void RemoveWeaponFromActiveList(RemoveWeaponFromActiveList signal) =>
-            _shotWeapons.Remove(signal.WeaponFacade);
+        private void RemoveWeaponFromActiveList(RemoveWeaponFromActiveListSignal signal) =>
+            _shotWeapons.Remove(signal.WeaponController);
         
 
             private void ShootBulletOnPerformed(InputAction.CallbackContext obj)
@@ -61,17 +61,17 @@ namespace Player.ShootSystem
             if (_currentTime < _balanceStorage.WeaponConfig.ShootDelay)
                 return;
 
-            if (shootHandler.TryShoot(out var weaponFacade))
+            if (shootHandler.TryShoot(out var weaponController))
             {
-                _shotWeapons.Add(weaponFacade);
+                _shotWeapons.Add(weaponController);
                 _previousTime = Time.time;
             }
         }
 
         public void DespawnAllShotWeapon()
         {
-            foreach (var weaponFacade in _shotWeapons.ToArray())
-                weaponFacade.DespawnWeapon();
+            foreach (var weapon in _shotWeapons.ToArray())
+                weapon.DespawnWeapon();
             
             _shotWeapons.Clear();
         }

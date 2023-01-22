@@ -17,3 +17,4 @@ MonoBehaviour:
   _bulletShootSpeed: 10
   _rayShootSpeed: 20
   _shootDelay: 1
+  _weaponLifeTime: 3

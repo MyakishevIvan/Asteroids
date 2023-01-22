@@ -1,5 +1,6 @@
 using Asteroids.Enemies;
 using Player.Stats;
+using Player.View;
 using UnityEngine;
 
 namespace Player.ShootSystem

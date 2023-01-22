@@ -4,7 +4,7 @@ using Asteroids.Signals;
 using UnityEngine;
 using Zenject;
 
-namespace BaseLogic.Installers
+namespace Project.Installers
 {
     public class ProjectInstaller : MonoInstaller
     {
@@ -25,16 +25,17 @@ namespace BaseLogic.Installers
             Container.DeclareSignal<StartGameSignal>();
             Container.DeclareSignal<EndGameSignal>();
             Container.DeclareSignal<RayEndedSignal>();
-            Container.DeclareSignal<RayReloadTimeEned>();
-            Container.DeclareSignal<RemoveEnemyFromActiveList>();
-            Container.DeclareSignal<RemoveWeaponFromActiveList>();
+            Container.DeclareSignal<RayReloadTimeEndedSingal>();
+            Container.DeclareSignal<RemoveEnemyFromActiveListSignal>();
+            Container.DeclareSignal<RemoveWeaponFromActiveListSignal>();
+            Container.DeclareSignal<InсreaceScoreSignal>();
         }
 
         private void BindSystems()
         {
             Container.Bind<WindowsManager>().FromComponentInNewPrefab(windowsManager).AsSingle().NonLazy();
             WindowsManager.CustomWindowInstantiator = CustomWindowInstantiation;
-            Container.Bind<BalanceStorage>().FromInstance(balanceStorage).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<BalanceStorage>().FromInstance(balanceStorage).AsSingle().NonLazy();
         }
 
         private Window CustomWindowInstantiation(Window windowPrefab)

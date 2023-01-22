@@ -1,9 +1,8 @@
 using UnityEngine;
 
-namespace Player.ShootSystem
+namespace Weapons.View
 {
     public class BaseWeaponView : MonoBehaviour
     {
-        
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Asteroids.Enemies;
-using Asteroids.Enums;
-using Player.Stats;
-using Player.ShootSystem;
+using Enemies.View;
+using Player.View;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Weapons.View;
 
 namespace Asteroids.Configs
 {

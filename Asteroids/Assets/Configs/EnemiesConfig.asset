@@ -22,3 +22,5 @@ MonoBehaviour:
   asteroidParticleFlySpeed: 6
   asteroidLifeTime: 10
   trajectoryVariance: 15
+  cashedEnemiesSettingsCount: 100
+  cashedAsteroidParticleSettingsCount: 30

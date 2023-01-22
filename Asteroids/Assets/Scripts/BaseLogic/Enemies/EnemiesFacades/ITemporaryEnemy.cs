@@ -7,7 +7,7 @@ namespace Asteroids.Enemies
     {
         public Coroutine DespawnRoutine { get; set; }
         public IEnumerator DespawnCoroutine();
-        public void StartDespawnAfterLifeTimeRoutine();
+        public void StartDespawnAfterEndLifeTimeRoutine();
         public void StopDespawnAfterLifeTimeRoutine();
     }
 }

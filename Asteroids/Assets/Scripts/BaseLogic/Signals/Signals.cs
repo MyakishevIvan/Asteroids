@@ -14,6 +14,11 @@ namespace Asteroids.Signals
         }
     }
 
+    public class InсreaceScoreSignal
+    {
+        
+    }
+    
     public class StartGameSignal
     {
         
@@ -29,26 +34,26 @@ namespace Asteroids.Signals
         
     }
     
-    public class RayReloadTimeEned
+    public class RayReloadTimeEndedSingal
     {
         
     }
 
-    public class RemoveEnemyFromActiveList
+    public class RemoveEnemyFromActiveListSignal
     {
-        public BaseEnemyFacade EnemyFacade { get; }
-        public RemoveEnemyFromActiveList(BaseEnemyFacade enemyFacade)
+        public BaseEnemyController EnemyController { get; }
+        public RemoveEnemyFromActiveListSignal(BaseEnemyController enemyController)
         {
-            EnemyFacade = enemyFacade;
+            EnemyController = enemyController;
         }
     }
     
-    public class RemoveWeaponFromActiveList
+    public class RemoveWeaponFromActiveListSignal
     {
-        public BaseWeaponFacade WeaponFacade { get; }
-        public RemoveWeaponFromActiveList(BaseWeaponFacade weaponFacade)
+        public BaseWeaponController WeaponController { get; }
+        public RemoveWeaponFromActiveListSignal(BaseWeaponController weaponController)
         {
-            WeaponFacade = weaponFacade;
+            WeaponController = weaponController;
         }
     }
 }

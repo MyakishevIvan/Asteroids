@@ -11,18 +11,18 @@ namespace Player.ShootSystem
     {
         [Inject] private PlayerStatsManager _playerStatsManager;
         [Inject] private SignalBus _signalBus;
-        [Inject] private RayFacade.RayPool _pool;
+        [Inject] private RayController.RayPool _pool;
         private Coroutine _reloadRoutine;
         
-        public override bool TryShoot(out BaseWeaponFacade weaponFacade)
+        public override bool TryShoot(out BaseWeaponController weaponController)
         {
-            weaponFacade = null;
+            weaponController = null;
 
             if (!_playerStatsManager.TrySpendRays())
                 return false;
             
             _trajectorySettings.Init(_playerView);
-            weaponFacade = _pool.Spawn(_trajectorySettings);
+            weaponController = _pool.Spawn(_trajectorySettings);
             return true;
         }
         

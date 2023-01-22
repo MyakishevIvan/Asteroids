@@ -1,5 +1,5 @@
 ﻿using Asteroids.Configs;
-using Player.Stats;
+using Player.View;
 using UnityEngine;
 using Zenject;
 
@@ -32,6 +32,13 @@ namespace Player.MovementSystem
 
         public void PlayerMovementUpdate()
         {
+            CalculateVector();
+            MovePlayer();
+            CheckBounds();
+        }
+
+        private void CalculateVector()
+        {
             var movementInput = _playerInputAction.Player.Movement.ReadValue<Vector2>();
             _currentInput =
                 Vector2.SmoothDamp
@@ -42,9 +49,6 @@ namespace Player.MovementSystem
                     ref _smoothInputVelocity,
                     PlayerConfig.SmoothInputSpeed
                 );
-
-            MovePlayer();
-            CheckBounds();
         }
 
         private void MovePlayer()

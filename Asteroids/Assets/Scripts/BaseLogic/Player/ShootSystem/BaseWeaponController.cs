@@ -1,22 +1,23 @@
 using System;
+using Asteroids.Configs;
 using Asteroids.Enemies;
 using Asteroids.Helper;
-using BaseLogic.Installers;
 using UnityEngine;
 using Zenject;
 
 namespace Player.ShootSystem
 {
-    public abstract class BaseWeaponFacade : MonoBehaviour, IObjectPoolable
+    public abstract class BaseWeaponController : MonoBehaviour, IObjectPoolable
     {
         [Inject] protected SignalBus _signalBus;
+        [Inject] private BalanceStorage _balanceStorage;
         private int _weaponSpeed;
         private Vector3 _direction;
 
         protected void Init(WeaponTrajectorySettings settings, int weaponSpeed)
         {
             SetSettings(settings, weaponSpeed);
-            Invoke(nameof(DespawnWeapon), 2);
+            Invoke(nameof(DespawnWeapon), _balanceStorage.WeaponConfig.WeaponLifeTime);
         }
 
         private void SetSettings(WeaponTrajectorySettings settings, int weaponSpeed)
@@ -40,6 +41,7 @@ namespace Player.ShootSystem
 
         public void OnDespawned()
         {
+            CancelInvoke(nameof(DespawnWeapon));
             gameObject.SetActive(false);
         }
 
@@ -55,12 +57,12 @@ namespace Player.ShootSystem
         {
             if (col.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
             {
-                var enemyController = col.gameObject.GetComponent<BaseEnemyFacade>();
+                var enemyController = col.gameObject.GetComponent<BaseEnemyController>();
                 HandleDamage(enemyController);
             }
         }
 
         public abstract void DespawnWeapon();
-        protected abstract void HandleDamage(BaseEnemyFacade enemyFacade);
+        protected abstract void HandleDamage(BaseEnemyController enemyController);
     }
 }

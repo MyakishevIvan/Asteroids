@@ -7,9 +7,8 @@ using Zenject;
 
 namespace Asteroids.Enemies
 {
-    public class AsteroidFacade : BaseEnemyFacade, ITemporaryEnemy
+    public class AsteroidController : BaseEnemyController, ITemporaryEnemy
     {
-        [Inject] private SignalBus _signalBus;
         [Inject] private AsteroidPool _pool;
         [Inject] private BalanceStorage _balanceStorage;
         
@@ -52,10 +51,10 @@ namespace Asteroids.Enemies
         protected override void HitEnemy()
         {
             _pool.Despawn(this);
-            CoroutinesManager.StopRoutine(DespawnRoutine);
+            _signalBus.Fire(new InсreaceScoreSignal());
         }
         
-        public void StartDespawnAfterLifeTimeRoutine() =>
+        public void StartDespawnAfterEndLifeTimeRoutine() =>
             DespawnRoutine = CoroutinesManager.StartRoutine(DespawnCoroutine());
         
         public IEnumerator DespawnCoroutine()
@@ -65,40 +64,45 @@ namespace Asteroids.Enemies
         }
 
         public override void DespawnEnemy() => _pool.Despawn(this);
-        
+
+        protected override void OnDespawned()
+        {
+            StopDespawnAfterLifeTimeRoutine();
+            base.OnDespawned();
+        }
+
         public void StopDespawnAfterLifeTimeRoutine() => CoroutinesManager.StopRoutine(DespawnRoutine);
         
-        public class AsteroidPool : MemoryPool<ITrajectorySettings, AsteroidFacade>
+        public class AsteroidPool : MemoryPool<ITrajectorySettings, AsteroidController>
         {
             [Inject] private SignalBus _signalBus;
 
             // Called immediately after the item is first added to the pool
-            protected override void OnCreated(AsteroidFacade facade)
+            protected override void OnCreated(AsteroidController controller)
             {
-                facade.gameObject.SetActive(false);
+                controller.OnCreated();
             }
 
             // Called immediately after the item is removed from the pool
-            protected override void OnSpawned(AsteroidFacade facade)
+            protected override void OnSpawned(AsteroidController controller)
             {
-                facade.gameObject.SetActive(true);
+                controller.OnSpawned();
             }
 
             // Called immediately after the item is returned to the pool
-            protected override void OnDespawned(AsteroidFacade facade)
+            protected override void OnDespawned(AsteroidController controller)
             {
-                _signalBus.Fire(new RemoveEnemyFromActiveList(facade));
-                facade.gameObject.SetActive(false);
+               controller.OnDespawned();
             }
 
             // Similar to OnSpawned
             // Called immediately after the item is removed from the pool
             // This method will also contain any parameters that are passed along
             // to the memory pool from the spawning code
-            protected override void Reinitialize(ITrajectorySettings settings, AsteroidFacade enemy)
+            protected override void Reinitialize(ITrajectorySettings settings, AsteroidController enemy)
             {
                 enemy.SetTrajectorySettings(settings);
-                enemy.StartDespawnAfterLifeTimeRoutine();
+                enemy.StartDespawnAfterEndLifeTimeRoutine();
             }
         }
     }
