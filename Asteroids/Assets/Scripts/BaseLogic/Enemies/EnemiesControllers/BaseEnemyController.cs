@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Asteroids.Audio;
+using Asteroids.Enums;
 using Asteroids.Signals;
 using Enemies.View;
 using UnityEngine;

@@ -1,6 +1,8 @@
+using Asteroids.Audio;
 using Asteroids.Configs;
-using Asteroids.Windows;
 using Asteroids.Signals;
+using Asteroids.UI.Windows;
+using Asteroids.WindowsManager;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +12,7 @@ namespace Project.Installers
     {
         [SerializeField] private WindowsManager windowsManager;
         [SerializeField] private BalanceStorage balanceStorage;
+        [SerializeField] private SoundsController soundsController;
         
         public override void InstallBindings()
         {
@@ -36,6 +39,7 @@ namespace Project.Installers
             Container.Bind<WindowsManager>().FromComponentInNewPrefab(windowsManager).AsSingle().NonLazy();
             WindowsManager.CustomWindowInstantiator = CustomWindowInstantiation;
             Container.BindInterfacesAndSelfTo<BalanceStorage>().FromInstance(balanceStorage).AsSingle().NonLazy();
+            Container.Bind<SoundsController>().FromInstance(soundsController).AsSingle().NonLazy();
         }
 
         private Window CustomWindowInstantiation(Window windowPrefab)

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Asteroids.Windows
+namespace Asteroids.UI.Windows
 {
     public class PromptWindow : BaseWindow<PromptWindowSetup>
     {

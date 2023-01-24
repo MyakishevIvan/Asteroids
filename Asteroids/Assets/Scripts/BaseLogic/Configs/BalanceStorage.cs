@@ -14,16 +14,19 @@ namespace Asteroids.Configs
         [SerializeField] private EnemiesConfig enemiesConfig;
         [SerializeField] private PlayerConfig playerConfig;
         [SerializeField] private TextConfig textConfig;
+        [SerializeField] private SoundsConfig soundsConfig;
 
         public  ObjectViewConfig ObjectViewConfig => objectViewConfig;
         public  WeaponConfig WeaponConfig => weaponConfig;
         public EnemiesConfig EnemiesConfig => enemiesConfig;
         public PlayerConfig PlayerConfig => playerConfig;
         public TextConfig TextConfig => textConfig;
+        public SoundsConfig SoundsConfig => soundsConfig;
         
         public void Initialize()
         {
             textConfig.OnCreat();
+            soundsConfig.OnCreat();
         }
     }
 }

@@ -1,5 +1,6 @@
 using Asteroids.Configs;
 using Asteroids.Enemies;
+using Asteroids.Enums;
 using Asteroids.Signals;
 using Zenject;
 
@@ -20,6 +21,12 @@ namespace Player.ShootSystem
             enemyController.BulletDamage();
             DespawnWeapon();
             _signalBus.Fire(new RemoveWeaponFromActiveListSignal(this));
+        }
+        
+        public override void OnSpawned()
+        {
+            _soundsController.PlaySound(SoundType.BulletSound);
+            base.OnSpawned();
         }
         
         public class BulletPool : MemoryPool<WeaponTrajectorySettings, BulletController>

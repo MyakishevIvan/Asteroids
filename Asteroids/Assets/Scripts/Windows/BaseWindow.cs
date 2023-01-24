@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Asteroids.Windows
+namespace Asteroids.UI.Windows
 {
     public abstract class BaseWindow<TSetup> : Window where TSetup : WindowSetup
     {

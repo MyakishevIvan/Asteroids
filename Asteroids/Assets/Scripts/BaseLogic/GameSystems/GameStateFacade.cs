@@ -11,7 +11,7 @@ namespace Game.Controllers
     public class GameStateFacade : IInitializable, ITickable
     {
         [Inject] private UiController _uiController;
-        [Inject] private GameProfile _gameProfile;
+        [Inject] private GameProfileSettings _gameProfileSettings;
         [Inject] private SignalBus _signalBus;
         [Inject] private PlayerController _playerController;
         [Inject] private ShootingManager _shootingManager;
@@ -22,12 +22,12 @@ namespace Game.Controllers
             _signalBus.Subscribe<EndGameSignal>(EndGame);
             _uiController.OpenHud();
 
-            if (!_gameProfile.IsUserPlayedBefore())
+            if (!_gameProfileSettings.IsUserPlayedBefore())
                 _uiController.OpenFirstGamePrompt(StartGame);
             else
                 StartGame();
 
-            _gameProfile.SaveFirstGameStart();
+            _gameProfileSettings.SaveFirstGameStart();
         }
 
         private void StartGame()
@@ -50,7 +50,7 @@ namespace Game.Controllers
         public void Tick()
         {
             if (Input.GetKeyDown(KeyCode.F))
-                _gameProfile.RemoveSave();
+                _gameProfileSettings.RemoveSave();
         }
     }
 }

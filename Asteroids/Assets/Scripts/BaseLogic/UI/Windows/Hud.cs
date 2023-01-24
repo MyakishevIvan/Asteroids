@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
+using Asteroids.UI.Elements;
 using TMPro;
 using UnityEngine;
 
-namespace Asteroids.Windows
+namespace Asteroids.UI.Windows
 {
     public class Hud : BaseWindow<HudSetup>
     {
-        [SerializeField] private TMP_Text _textStats;
+        [SerializeField] private TMP_Text textStats;
+        [SerializeField] private Switcher switcher; 
         private Coroutine _coroutine;
         private HudSetup _hudSetup;
         
@@ -15,6 +17,7 @@ namespace Asteroids.Windows
         {
             _hudSetup = setup;
             _coroutine = StartCoroutine(UpdateStats());
+            switcher.Init(setup.soundIsOn, setup.onSoundAction, setup.offSoundAction);
         }
         
         private IEnumerator UpdateStats()
@@ -22,7 +25,7 @@ namespace Asteroids.Windows
             while (true)
             {
                 yield return new WaitForSeconds(0.3f);
-                _textStats.text = _hudSetup.GetPlayerParams();
+                textStats.text = _hudSetup.GetPlayerParams();
             }
         }
 
@@ -35,6 +38,9 @@ namespace Asteroids.Windows
     public class HudSetup : WindowSetup
     {
         public Func<string> GetPlayerParams;
+        public Action onSoundAction;
+        public Action offSoundAction;
+        public bool soundIsOn;
     }
 
 }

@@ -1,6 +1,8 @@
 using System;
+using Asteroids.Audio;
 using Asteroids.Configs;
 using Asteroids.Enemies;
+using Asteroids.Enums;
 using Asteroids.Helper;
 using UnityEngine;
 using Zenject;
@@ -11,6 +13,7 @@ namespace Player.ShootSystem
     {
         [Inject] protected SignalBus _signalBus;
         [Inject] private BalanceStorage _balanceStorage;
+        [Inject] protected SoundsController _soundsController;
         private int _weaponSpeed;
         private Vector3 _direction;
 
@@ -34,7 +37,7 @@ namespace Player.ShootSystem
             _weaponSpeed = weaponSpeed;
         }
         
-        public void OnSpawned()
+        public virtual void OnSpawned()
         {
             gameObject.SetActive(true);
         }
@@ -58,6 +61,7 @@ namespace Player.ShootSystem
             if (col.gameObject.layer == LayerMask.NameToLayer(TextNameHelper.ENEMY))
             {
                 var enemyController = col.gameObject.GetComponent<BaseEnemyController>();
+                _soundsController.PlaySound(SoundType.ExplosionSound);
                 HandleDamage(enemyController);
             }
         }

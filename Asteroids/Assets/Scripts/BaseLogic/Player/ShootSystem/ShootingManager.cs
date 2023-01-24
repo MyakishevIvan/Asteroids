@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Asteroids.Configs;
+using Asteroids.GameProfile;
 using Asteroids.Signals;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -56,6 +57,9 @@ namespace Player.ShootSystem
 
         private void TryShooting(BaseShootHandler shootHandler)
         {
+            if(GameProfileSettings.IsPointOverUIElements)
+                return;
+            
             _currentTime = Time.time - _previousTime;
 
             if (_currentTime < _balanceStorage.WeaponConfig.ShootDelay)

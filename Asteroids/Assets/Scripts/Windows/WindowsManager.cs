@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using Asteroids.Helper;
 using UnityEngine;
 using System;
+using Asteroids.UI.Windows;
 
-namespace Asteroids.Windows
+namespace Asteroids.WindowsManager
 {
     public class WindowsManager : DontDestroyMonoBehaviourSingleton<WindowsManager>
     {

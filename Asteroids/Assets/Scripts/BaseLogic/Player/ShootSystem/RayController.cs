@@ -1,5 +1,6 @@
 using Asteroids.Configs;
 using Asteroids.Enemies;
+using Asteroids.Enums;
 using Zenject;
 
 namespace Player.ShootSystem
@@ -12,6 +13,12 @@ namespace Player.ShootSystem
         {
             if (gameObject.activeSelf)
                 _pool.Despawn(this);
+        }
+
+        public override void OnSpawned()
+        {
+            _soundsController.PlaySound(SoundType.RaySound);
+            base.OnSpawned();
         }
 
         protected override void HandleDamage(BaseEnemyController enemyController)

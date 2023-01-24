@@ -65,7 +65,7 @@ namespace Scene.Installer
         private void BindGameSystems()
         {
             Container.BindInterfacesAndSelfTo<UiController>().AsSingle().NonLazy();
-            Container.Bind<GameProfile>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<GameProfileSettings>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameStateFacade>().AsSingle().NonLazy();
         }
         
