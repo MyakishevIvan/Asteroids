@@ -1,4 +1,5 @@
-﻿using Asteroids.Configs;
+﻿using Asteroids.Boundary;
+using Asteroids.Configs;
 using Player.View;
 using UnityEngine;
 using Zenject;
@@ -10,21 +11,14 @@ namespace Player.MovementSystem
         [Inject] private BalanceStorage _balanceStorage;
         [Inject] private PlayerView _playerView;
         [Inject] private PlayerInputAction _playerInputAction;
+        [Inject] private LevelBoundary _levelBoundary;
         
-        private Vector2 _horizontalBounds;
-        private Vector2 _verticalBounds;
         private Vector2 _currentInput;
         private Vector2 _smoothInputVelocity;
 
         private Transform PlayerTransform => _playerView.transform;
         private PlayerConfig PlayerConfig => _balanceStorage.PlayerConfig;
-
-        public PlayerMovementSystem(Vector3 horizontalBounds, Vector3 verticalBounds)
-        {
-            _horizontalBounds = horizontalBounds;
-            _verticalBounds = verticalBounds;
-        }
-
+        
         public void Initialize()
         {
             _playerInputAction.Enable();
@@ -65,22 +59,22 @@ namespace Player.MovementSystem
         
         private void CheckHorizontalBounds()
         {
-            if (PlayerTransform.position.x > _horizontalBounds.x)
-                PlayerTransform.position = new Vector3(-_horizontalBounds.x, PlayerTransform.position.y,
+            if (PlayerTransform.position.x > _levelBoundary.Right)
+                PlayerTransform.position = new Vector3(_levelBoundary.Left, PlayerTransform.position.y,
                     PlayerTransform.position.z);
-            else if (PlayerTransform.position.x < -_horizontalBounds.x)
+            else if (PlayerTransform.position.x < _levelBoundary.Left)
                 PlayerTransform.position =
-                    new Vector3(_horizontalBounds.x, PlayerTransform.position.y, PlayerTransform.position.z);
+                    new Vector3(_levelBoundary.Right, PlayerTransform.position.y, PlayerTransform.position.z);
         }
 
         private void CheckVerticalBounds()
         {
-            if (PlayerTransform.position.y > _verticalBounds.y)
+            if (PlayerTransform.position.y > _levelBoundary.Top)
                 PlayerTransform.position =
-                    new Vector3(PlayerTransform.position.x, -_verticalBounds.y, PlayerTransform.position.z);
-            else if (PlayerTransform.position.y < -_verticalBounds.y)
+                    new Vector3(PlayerTransform.position.x, _levelBoundary.Bottom, PlayerTransform.position.z);
+            else if (PlayerTransform.position.y < _levelBoundary.Bottom)
                 PlayerTransform.position =
-                    new Vector3(PlayerTransform.position.x, _verticalBounds.y, PlayerTransform.position.z);
+                    new Vector3(PlayerTransform.position.x, _levelBoundary.Top, PlayerTransform.position.z);
         }
     }
 }

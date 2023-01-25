@@ -1,3 +1,4 @@
+using Asteroids.Boundary;
 using Asteroids.Configs;
 using Asteroids.Enemies;
 using Player.Stats;
@@ -17,8 +18,6 @@ namespace Scene.Installer
     public class GameSceneInstaller : MonoInstaller
     {
         [Inject] private BalanceStorage _balanceStorage;
-        [SerializeField] private Transform horizontalBounds;
-        [SerializeField] private Transform verticalBounds;
         private PlayerView _playerView;
 
         public override void InstallBindings()
@@ -37,8 +36,8 @@ namespace Scene.Installer
                 Vector3.zero, Quaternion.identity, null);
             Container.Bind<PlayerView>().FromInstance(_playerView).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerInputAction>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle()
-                .WithArguments(horizontalBounds.position, verticalBounds.position);
+            Container.Bind<LevelBoundary>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerMovementSystem>().AsSingle().NonLazy();
             var playerController = Container.InstantiateComponent<PlayerController>(_playerView.gameObject);
             Container.Bind<PlayerController>().FromInstance(playerController).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerStartsStorage>().AsSingle().NonLazy();
